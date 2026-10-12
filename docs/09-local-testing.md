@@ -57,7 +57,7 @@ Checks:
 
 1. Go to **http://localhost:5173/#admin**
 2. Email and password: whatever is in your `.env` (`ADMIN_EMAIL` / `ADMIN_PASSWORD`)
-3. You should see both submissions.
+3. You should see the submissions.
 
 Checks:
 
@@ -109,6 +109,17 @@ nothing is lost. Press the same button again to retry.
 
 The API half is not running. Run `npm run dev` (not `npm run dev:web`) and confirm the
 `[api] RSVP API listening` line appears.
+
+### The RSVP form disappears after clicking a button
+
+That was a real bug (fixed): the programme payload arrived wrapped as
+`{ guest, programme }` and the client read it directly, so a missing field crashed the
+React tree and unmounted the form. It is now covered by `npm run test:ui`, which fails
+on any page crash.
+
+If you ever see a section replaced by "This part could not be displayed", that is the
+error boundary doing its job: the rest of the invitation stays usable, your RSVP is
+already saved, and **Reload the page** restores everything.
 
 ### Programme stays locked after an attending RSVP
 

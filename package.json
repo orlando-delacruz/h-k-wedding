@@ -10,7 +10,8 @@
     "server": "node server/index.js",
     "build": "node ./node_modules/vite/bin/vite.js build",
     "preview": "node ./node_modules/vite/bin/vite.js preview",
-    "verify": "node scripts/verify-spec.mjs && node scripts/qa.mjs && node --import ./scripts/mocks/blob-loader.mjs scripts/qa-blob.mjs"
+    "verify": "node scripts/verify-spec.mjs && node scripts/qa.mjs && node --import ./scripts/mocks/blob-loader.mjs scripts/qa-blob.mjs",
+    "test:ui": "node scripts/qa-browser.mjs"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.1",
