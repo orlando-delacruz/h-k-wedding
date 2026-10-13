@@ -30,12 +30,8 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
 
 - “TWO HEARTS. ONE LOVE. ONE JOURNEY.”
 - “Join us as we say “I do.””
-- “Harthwel”
-- “and”
-- “Khatrina”
-- “November 30, 2026 · 6:30 AM”
-- Music label: “Songs of love”
-- Songs: Pahintulot, Paninindigan Kita.
+- Songs: Pahintulot, Paninindigan Kita. (The “Songs of love” label and the
+  gramophone card were removed; the floating player shows the track name.)
 
 ## Venues
 

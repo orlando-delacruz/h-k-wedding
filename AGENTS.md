@@ -60,8 +60,10 @@ any older doc where they disagree.
   or account credentials.
 - Never invent or hardcode map URLs, form IDs, or query parameters. Owner-supplied
   URLs live centralized in `src/config/` only.
-- Placeholder imagery stays clearly labelled in the UI and centralized in
-  `src/config/`. Never present stock photography as an actual photo of the couple.
+- Placeholder imagery stays centralized in `src/config/` and drop-in
+  swappable. The owner asked for no temporary labels in the UI, so the page
+  presents the current photos plainly: they must be replaced with the couple's
+  own shots before the invitation is shared (tracked in `docs/07`).
 - Swap assets by path only; do not scatter new URLs through components.
 
 ## 4. Workflow

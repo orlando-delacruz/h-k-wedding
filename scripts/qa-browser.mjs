@@ -126,9 +126,8 @@ try {
     await seeSection(page, `${tag}: venues`, '#venue .venue-block')
     check(`${tag}: countdown shows 4 boxes`, (await page.locator('#countdown .count-box').count()) === 4)
     await seeSection(page, `${tag}: calendar`, '#countdown .calendar-card')
-    await seeSection(page, `${tag}: curtain`, '#music .curtain-wrap')
-    await seeSection(page, `${tag}: gramophone`, '#music .gramo-card')
-    check(`${tag}: 2 songs listed`, (await page.locator('#music .song-chip').count()) === 2)
+    check(`${tag}: no in-details curtain`, (await page.locator('#music .curtain-wrap').count()) === 0)
+    check(`${tag}: no gramophone card`, (await page.locator('#music .gramo-card').count()) === 0)
     await seeSection(page, `${tag}: venue maps`, '#venue .mirror')
     await seeSection(page, `${tag}: programme outline`, '.stage-list')
     await seeSection(page, `${tag}: story card`, '#story .story-card')
@@ -139,15 +138,45 @@ try {
     await seeSection(page, `${tag}: footer`, '.footer')
     await noOverflow(page, `${tag}: full page`)
 
-    /* --------------------------------- curtain --------------------------------- */
-    await page.locator('#music .curtain-cta').click().catch(() => {})
-    await page.waitForTimeout(6500)
-    check(`${tag}: curtain opens on tap`, await page.locator('#music .curtain-wrap.is-open').isVisible().catch(() => false))
-    check(`${tag}: reveal copy appears`, await page.locator('.curtain-reveal.shown').isVisible().catch(() => false))
+    /* ---------------------------- the player picks songs ---------------------- */
+    // The page sweep above scrolled down, so the player is folded to the disc.
+    if (await page.locator('.music-bar.collapsed').count()) {
+      await page.locator('.mb-deck').click()
+      await page.waitForTimeout(700)
+    }
+    await page.locator('.mb-meta').click()
+    await page.waitForTimeout(400)
+    check(`${tag}: player opens a song list`, await page.locator('.mb-menu .song-chip').first().isVisible().catch(() => false))
+    check(`${tag}: both songs are offered`, (await page.locator('.mb-menu .song-chip').count()) === 2)
+    await page.locator('.mb-menu .song-chip').nth(1).click()
+    await page.waitForTimeout(1200)
+    const picked = await page.locator('.mb-title').innerText().catch(() => '')
+    check(`${tag}: choosing a song switches the track`, /Paninindigan/i.test(picked), picked)
+    const pickedSrc = await page.locator('audio').evaluate((a) => a.currentSrc || a.src).catch(() => '')
+    check(`${tag}: chosen file is played`, /paninindigan-kita\.mp3$/.test(pickedSrc), pickedSrc)
+
+    /* the player rolls on to the next track by itself */
+    await page.locator('audio').evaluate((a) => a.dispatchEvent(new Event('ended')))
+    await page.waitForTimeout(1200)
+    const rolled = await page.locator('.mb-title').innerText().catch(() => '')
+    const rolledSrc = await page.locator('audio').evaluate((a) => a.currentSrc || a.src).catch(() => '')
+    check(`${tag}: a finished song rolls into the next`, /Pahintulot/i.test(rolled) && /pahintulot\.mp3$/.test(rolledSrc), `${rolled} :: ${rolledSrc}`)
+
+    /* scrolling folds the nameplate away; tapping brings it back */
+    await page.evaluate(() => window.scrollTo(0, 600))
+    await page.waitForTimeout(400)
+    await page.evaluate(() => window.scrollTo(0, 1900))
+    await page.waitForTimeout(700)
+    check(`${tag}: scrolling collapses the player to the disc`, await page.locator('.music-bar.collapsed').isVisible().catch(() => false))
+    const titleShown = await page.locator('.mb-meta').isVisible().catch(() => false)
+    check(`${tag}: collapsed player hides the title`, !titleShown)
+    await page.locator('.mb-deck').click()
+    await page.waitForTimeout(600)
+    check(`${tag}: tapping the disc brings the title back`, await page.locator('.music-bar.collapsed').count() === 0)
 
     /* --------------------------------- chrome ---------------------------------- */
     const navCount = await page.locator('.bottom-nav a').count()
-    check(`${tag}: bottom nav shows all anchors`, navCount === 7, `links=${navCount}`)
+    check(`${tag}: bottom nav shows all anchors`, navCount === 5, `links=${navCount}`)
     const navFits = await page.evaluate(() => {
       const nav = document.querySelector('.bottom-nav')
       return nav ? nav.scrollWidth <= nav.clientWidth + 1 : false

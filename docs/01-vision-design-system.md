@@ -41,7 +41,7 @@ Flat yellow borders are explicitly avoided.
 | Effect | Where | Implementation |
 |---|---|---|
 | Glitter | hero + background | `ParticleField` canvas |
-| Illumination | vinyl, CTA pulse | CSS keyframes |
+| Illumination | player disc, CTA pulse | CSS keyframes |
 | Fade / reveal | all sections | `[data-reveal]` + `useReveal` |
 | Curtain (entry) | post-code reveal | midnight velvet + gold, 3D: ~1.4 s hold, ~3 s rotateY gather with parallax layers, music starts with it, tap to skip |
 | Curtain (music) | announcement | anime.js slide after 3 s hold, tap to open |
@@ -69,6 +69,6 @@ src/components/
   chrome.jsx       BottomNav (all anchors), MusicBar (mini gramophone)
   AccessGate.jsx   first view: RSVP form hand-off + access-code field
   EntryCurtain.jsx full-screen velvet reveal after the code, starts the music
-  ProgramStage.jsx curtain reveal, gramophone, venues, programme outline
+  ProgramStage.jsx announcement, venues with maps, programme outline
   ErrorBoundary.jsx section-level failure fallback
 ```

@@ -1,9 +1,9 @@
 import React, { useId } from 'react'
 import { SparkleIcon } from './Icons.jsx'
 
-export function SectionHeading({ icon: Icon, kicker, title, sub, light = false, className = '' }) {
+export function SectionHeading({ icon: Icon, kicker, title, sub, className = '' }) {
   return (
-    <header className={`sec-head ${light ? 'light' : ''} ${className}`} data-reveal>
+    <header className={`sec-head ${className}`} data-reveal>
       {Icon && (
         <div className="sec-icon">
           <Icon size={22} />

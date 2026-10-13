@@ -8,23 +8,18 @@
 - Files ship with the site in `public/music/` (see 07). The gramophone and the
   entry curtain both play from these local files — no demo streams anywhere.
 
-## Gramophone
+## The player
 
-- Gramophone-inspired selector in the announcement section.
-- Floating mini-gramophone bar (`MusicBar` in `chrome.jsx`): spinning vinyl deck,
-  tonearm that drops on play, uppercase track nameplate, gold rim with light-sweep.
-  Same play/pause + open-player actions as before.
-- Subtle gold glow indicates it is tappable.
-- Controls: song switch + play/pause + clear status text.
-
-## Autoplay policy
-
-- The access-code submit is the gesture: when the entry curtain starts opening,
-  the default song starts with it. If playback is rejected, a “Tap to play”
-  fallback appears in the announcement section.
-- The mid-page curtain CTA also attempts playback on tap.
-- Never autoplay loudly or unexpectedly: music only ever starts from a guest
-  gesture (code submit, curtain tap, vinyl tap).
+- The floating mini-gramophone (`MusicBar` in `chrome.jsx`) is the **only** music
+  UI: no player section, no “Songs of love” card.
+- Vinyl disc = play/pause. Nameplate = the song list (both tracks, current one
+  ticked). Choosing a track plays it immediately.
+- **Scrolling down folds it to just the disc** (a CD); scrolling back up or
+  tapping the disc brings the nameplate back.
+- **Autoplay next:** when a track ends the player rolls into the other one, so
+  music continues hands-free; manual selection always wins.
+- Playback only ever starts from a guest gesture (disc tap or picking a track):
+  browsers block sound before one. The player never autoplays on load.
 
 ## Entry curtain (post-code reveal)
 
@@ -69,5 +64,5 @@
 ## Verify
 
 - Desktop + 360px mobile: entry curtain timing (hold → slow open → gone),
-  gramophone glow visible, song switch works between the 2 tracks,
-  blocked-autoplay fallback appears, reduced-motion shows static content.
+  the player's collapse-on-scroll and tap-to-expand, song switching between the
+  2 tracks, autoplay-next when a track ends, reduced-motion shows static content.

@@ -23,8 +23,8 @@ access control).
 - **Frontend only:** React 18 + Vite static build (`dist/`). No server, no API routes.
 - **Fonts:** Pinyon Script + Cormorant Garamond via Google Fonts. Body uses
   Cormorant Garamond until licensed Calluna files arrive (see `docs/07-assets-todo.md`).
-- **Animation:** anime.js choreography (entry curtain, music curtain), CSS ambient
-  motion + gold light-sweep. Respects `prefers-reduced-motion`.
+- **Animation:** anime.js choreography (entry curtain), CSS ambient motion + gold
+  light-sweep. Respects `prefers-reduced-motion`.
 - **RSVP:** one Google Form (`RSVP_FORM.linkUrl` in `src/config/site.js`), opened
   from the gate in a new tab. No in-page section, no custom submission code.
 - **Access gate:** `AccessGate.jsx` + `ACCESS` in `src/config/site.js`. The code
@@ -79,8 +79,7 @@ src/
   config/program.js          public programme (venues, story, photos)
   config/entourage.js        locked entourage data
   components/                Icons, Floral, effects, ui, chrome,
-                             AccessGate, EntryCurtain, ProgramStage, ErrorBoundary
-scripts/
+                             AccessGate, EntryCurtain, ProgramStage, ErrorBoundaryscripts/
   qa-browser.mjs             end-to-end suite (real Chrome)
   verify-spec.mjs            spec string checks
 public/

@@ -37,7 +37,8 @@ All placeholders allowed until real assets arrive. Keep paths stable so swap is 
 - [ ] Hero portrait, curtain portrait, story strip (3–6), slideshow (3–6)
 - [ ] Real story text for `src/config/program.js`
 - [ ] Attire-guide image, timeline image
-- Temp stock stays clearly labelled; never present as the couple.
+- No temporary labels appear in the UI (owner decision): the page presents the
+  current photos plainly, so the real shots must land before sharing.
 
 ## Drop-in checklist
 

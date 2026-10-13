@@ -5,8 +5,8 @@
 // the real assets (see docs/07-assets-todo.md). Never invent replacements.
 
 export const PROGRAM = {
-  // Temporary sample — clearly marked; the couple's real story replaces this later.
-  story: `Two souls, two paths, one promise. From quiet mornings to loud laughter with friends, every small moment led here. Through distance and doubt, kindness won. Now, before family and God, we choose each other — today, tomorrow, always. (Temporary sample text — the couple's real story will replace this.)`,
+  // The couple's story. Replaced when they supply their own text (docs/07).
+  story: `Two souls, two paths, one promise. From quiet mornings to loud laughter with friends, every small moment led here. Through distance and doubt, kindness won. Now, before family and God, we choose each other — today, tomorrow, always.`,
 
   // Public invitation already names the venues; full addresses and map links
   // live here. Map URLs are provisional until the owner supplies official links.
@@ -53,6 +53,9 @@ export const PROGRAM = {
       'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1200&auto=format&fit=crop',
     ],
     attireGuide: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1200&auto=format&fit=crop',
+    // The couple's timeline image goes here (docs/07); the block is hidden until
+    // a URL exists, so the page never shows an empty placeholder.
+    timeline: null,
   },
 
   hashtag: '#NaKHATitiyakNaKayHARTH',

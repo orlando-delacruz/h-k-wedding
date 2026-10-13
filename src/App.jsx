@@ -98,7 +98,6 @@ function InvitationPage({ startWithCurtain }) {
 
   const [songIdx, setSongIdx] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [needTap, setNeedTap] = useState(false)
   const audioRef = useRef(null)
 
   // Couple-supplied files in public/music/, served from /music/<file>.
@@ -114,7 +113,7 @@ function InvitationPage({ startWithCurtain }) {
   function play() {
     const a = audioRef.current
     if (!a) return
-    a.play().then(() => { setPlaying(true); setNeedTap(false) }).catch(() => { setPlaying(false); setNeedTap(true) })
+    a.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
   }
   function toggle() {
     const a = audioRef.current
@@ -129,6 +128,12 @@ function InvitationPage({ startWithCurtain }) {
     setTimeout(play, 40)
   }
 
+  /* The player runs on: when a track ends it rolls into the other one, and the
+     guest can still pick either track by hand from the player. */
+  function playNext() {
+    selectSong((songIdx + 1) % SONGS.length)
+  }
+
   return (
     <div className="page">
       <div className="bg-orb orb-a" aria-hidden="true" />
@@ -136,14 +141,21 @@ function InvitationPage({ startWithCurtain }) {
       <ParticleField density={26} className="bg-particles" />
       <MusicBar
         visible
-        song={SONGS[songIdx]?.title}
+        songs={SONGS}
+        songIdx={songIdx}
         playing={playing}
         onToggle={toggle}
-        onOpenPlayer={() => document.getElementById('music')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+        onSelectSong={selectSong}
       />
       <BottomNav visible granted />
 
-      <audio ref={audioRef} preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+      <audio
+        ref={audioRef}
+        preload="auto"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onEnded={playNext}
+      />
 
       {entry && <EntryCurtain onBeginOpening={play} onOpened={() => setEntry(false)} />}
 
@@ -176,12 +188,11 @@ function InvitationPage({ startWithCurtain }) {
         <div data-reveal style={{ transitionDelay: '120ms' }}>
           <Tilt className="portrait-tilt">
             <GoldFrame className="portrait-frame">
-              <img className="portrait-img" src={PHOTOS.heroPortrait} alt="Harthwel and Khatrina (temporary photo)" loading="lazy" />
+              <img className="portrait-img" src={PHOTOS.heroPortrait} alt="Harthwel and Khatrina" loading="lazy" />
               <div className="portrait-glow" aria-hidden="true" />
             </GoldFrame>
           </Tilt>
         </div>
-        <p className="photo-note" data-reveal>Temporary photo — the couple's real portrait replaces this.</p>
         <div className="portrait-meta">
           <span {...dly(0)}><ClockIcon size={15} /> 6:30 AM Ceremony</span>
           <span {...dly(1)}><MapPinIcon size={15} /> Girasoles Farm</span>
@@ -209,15 +220,7 @@ function InvitationPage({ startWithCurtain }) {
 
       {/* ————— Programme: announcement, venues, story, entourage, details, gallery ————— */}
       <ErrorBoundary>
-        <ProgramStage
-          program={PROGRAM}
-          songIdx={songIdx}
-          playing={playing}
-          needTap={needTap}
-          onToggle={toggle}
-          onSelectSong={selectSong}
-          onPlayPressed={play}
-        />
+        <ProgramStage program={PROGRAM} />
         <StorySection program={PROGRAM} />
         <EntourageSection />
         <DetailsSection program={PROGRAM} />
@@ -324,7 +327,7 @@ function EntourageSection() {
 function StorySection({ program }) {
   return (
     <section id="story" className="story-sec">
-      <SectionHeading icon={ScrollIcon} kicker="Moments we keep" title="Our Story" light className="wrap sec" />
+      <SectionHeading icon={ScrollIcon} kicker="Moments we keep" title="Our Story" className="wrap sec" />
       <div className="film-strip" data-reveal>
         <div className="film-track">
           {[...program.photos.strip, ...program.photos.strip].map((src, i) => (
@@ -367,29 +370,22 @@ function DetailsSection({ program }) {
           <h3><DressIcon size={20} /> ATTIRE GUIDE</h3>
           <Divider />
           <p>We would be honored if you could join us in your best attire. Let's make our special day more memorable in these colors.</p>
-          {program?.photos?.attireGuide ? (
+          {program?.photos?.attireGuide && (
             <Tilt max={5} className="detail-img-tilt">
-              <img src={program.photos.attireGuide} alt="Attire guide (temporary placeholder image)" loading="lazy" className="detail-img" />
+              <img src={program.photos.attireGuide} alt="Attire guide" loading="lazy" className="detail-img" />
             </Tilt>
-          ) : (
-            <div className="timeline-placeholder">
-              <DressIcon size={26} />
-              <p>Attire guide image placeholder</p>
-              <small>The couple's final attire guide will be placed here.</small>
-            </div>
           )}
-          <p className="detail-note">Temporary image — the couple's final attire guide replaces this.</p>
         </article>
 
-        <article className="detail-block">
-          <h3><ClockIcon size={20} /> WEDDING TIMELINE</h3>
-          <Divider />
-          <div className="timeline-placeholder">
-            <ClockIcon size={26} />
-            <p>Timeline image placeholder</p>
-            <small>The couple's final timeline image will be placed here.</small>
-          </div>
-        </article>
+        {program?.photos?.timeline && (
+          <article className="detail-block">
+            <h3><ClockIcon size={20} /> WEDDING TIMELINE</h3>
+            <Divider />
+            <Tilt max={5} className="detail-img-tilt">
+              <img src={program.photos.timeline} alt="Wedding timeline" loading="lazy" className="detail-img" />
+            </Tilt>
+          </article>
+        )}
 
         <article className="detail-block">
           <h3><GiftIcon size={20} /> GIFT GUIDE</h3>
@@ -425,8 +421,7 @@ function GallerySection({ program }) {
   return (
     <section id="gallery" className="sec gallery-sec">
       <SectionHeading icon={CameraOffIcon} kicker="A glimpse of us" title="Forever Starts Now" sub={program.hashtag} />
-      <div className="slideshow" data-reveal>
-        {program.photos.slideshow.map((src, i) => (
+      <div className="slideshow" data-reveal>        {program.photos.slideshow.map((src, i) => (
           <figure key={i} className={`slide ${i === slide ? 'on' : ''}`}>
             <img src={src} alt="" loading="lazy" />
           </figure>
@@ -434,7 +429,6 @@ function GallerySection({ program }) {
         <div className="slide-grain" aria-hidden="true" />
         <div className="hashtag"><ShinyText>{program.hashtag}</ShinyText></div>
       </div>
-      <p className="gallery-note" data-reveal>Temporary photos — the couple's real gallery replaces these.</p>
     </section>
   )
 }

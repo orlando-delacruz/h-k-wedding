@@ -23,3 +23,4 @@ export const PlayIcon = (p) => <S {...p}><path d="M7.4 4.8 19 12 7.4 19.2V4.8Z" 
 export const PauseIcon = (p) => <S {...p}><rect x="6.6" y="4.8" width="3.6" height="14.4" rx="1.4" fill="currentColor" stroke="none" /><rect x="13.8" y="4.8" width="3.6" height="14.4" rx="1.4" fill="currentColor" stroke="none" /></S>
 export const ChevronDownIcon = (p) => <S {...p}><path d="m5.5 9 6.5 6.5L18.5 9" /></S>
 export const FlowerIcon = (p) => <S {...p}><circle cx="12" cy="12" r="2.4" /><path d="M12 9.6c0-2 .3-3.8 0-4.8-.4-1.3-2.6-1.3-3 0-.3 1 0 2.8 0 4.8M14.4 12c2 0 3.8.3 4.8 0 1.3-.4 1.3-2.6 0-3-1-.3-2.8 0-4.8 0M12 14.4c0 2-.3 3.8 0 4.8.4 1.3 2.6 1.3 3 0 .3-1 0-2.8 0-4.8M9.6 12c-2 0-3.8-.3-4.8 0-1.3.4-1.3 2.6 0 3 1 .3 2.8 0 4.8 0" /></S>
+export const CheckIcon = (p) => <S {...p}><path d="m4.5 12.8 5 5L19.5 6.8" /></S>

@@ -15,6 +15,7 @@ const app = read('src', 'App.jsx')
 const stage = read('src', 'components', 'ProgramStage.jsx')
 const gate = read('src', 'components', 'AccessGate.jsx')
 const entry = read('src', 'components', 'EntryCurtain.jsx')
+const chrome = read('src', 'components', 'chrome.jsx')
 const site = read('src', 'config', 'site.js')
 const ent = read('src', 'config', 'entourage.js')
 const program = read('src', 'config', 'program.js')
@@ -36,11 +37,13 @@ const checks = [
   ['the wedding of', app, 'The wedding of'],
   ['intro sub', app, 'November 30, 2026 · Girasoles Farm'],
 
-  /* ---- announcement (Section 7, verbatim) ---- */
+  /* ---- announcement (Section 7) ---- */
   ['two hearts', stage, 'TWO HEARTS. ONE LOVE. ONE JOURNEY.'],
   ['join us', stage, 'Join us as we say ‘I do.’'],
-  ['names reveal', stage, 'Khatrina'],
-  ['reveal date', stage, 'November 30, 2026 · 6:30 AM'],
+  ['no in-details curtain', stage + styles, '___absent:curtain-panel___'],
+  ['no reveal copy block', stage, '___absent:curtain-reveal___'],
+  ['no gramophone card', stage + styles, '___absent:gramo-card___'],
+  ['no songs-of-love label', stage, '___absent:Songs of love___'],
 
   /* ---- RSVP (Section 8): one Google Form, offered from the gate ---- */
   ['deadline on the gate', gate, 'SITE.rsvpDeadline'],
@@ -107,8 +110,10 @@ const checks = [
   ['bible bearer', ent, 'Athan Kirch Marin'],
   ['covenant bearer', ent, 'Francis Rhyme Carabuena'],
 
-  /* ---- story (Section 14: placeholder, never invented) ---- */
-  ['story placeholder marked', program, 'Temporary sample text'],
+  /* ---- story (Section 14) ---- */
+  ['story copy present', program, 'Two souls, two paths, one promise.'],
+  ['no temporary notes in the UI', app + program + stage, '___absent:Temporary___'],
+  ['no placeholder labels in the UI', app + program, '___absent:image placeholder___'],
   ['film strip', app, 'film-track'],
 
   /* ---- details (Section 15, verbatim) ---- */
@@ -135,7 +140,8 @@ const checks = [
   ['no demo streams', site + app + stage, '___absent:soundhelix___'],
   ['no fallback audio map', site, '___absent:FALLBACK_AUDIO___'],
   ['player serves local files', app, 'music/${SONGS[songIdx].file}'],
-  ['gramophone', stage, 'gramo-card'],
+  ['player offers song selection', chrome, 'mb-menu'],
+  ['player is the only player', app, 'onSelectSong={selectSong}'],
 
   /* ---- entry curtain: post-code velvet reveal (Section 10b) ---- */
   ['entry curtain mounts on fresh unlock', app, 'startWithCurtain'],

@@ -30,10 +30,12 @@ story, entourage, details, slideshow, footer.
 
 ## 3. Entry curtain + music
 
-Enter the code: full-screen velvet drapes hold ~1.4 s, then part slowly while
-Pahintulot (the default song, from `public/music/`) starts. “Tap to unveil”
-skips the hold. The gramophone lists exactly 2 tracks; switching plays the
-other local file, or the tap-to-play fallback shows if the browser refused.
+Enter the code: the velvet curtain holds ~1.4 s, then opens while Pahintulot
+(the default song, from `public/music/`) starts. “Tap to unveil” skips the hold.
+
+The floating player is the only music UI: the disc plays/pauses, the nameplate
+opens the song list (2 tracks), a finished track rolls into the next one, and
+scrolling down folds the player to just the disc until you tap it.
 
 ## 4. Automated suites
 

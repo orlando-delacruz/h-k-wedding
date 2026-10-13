@@ -45,11 +45,12 @@ access gate is a courtesy screen, not access control (see `05`).
   Post-date: celebration message.
 - November 2026 calendar, Nov 30 gold-circled.
 
-## 6. Announcement + music
+## 6. Announcement
 
-- “TWO HEARTS. ONE LOVE. ONE JOURNEY.”, “Join us as we say ‘I do.’”,
-  “Harthwel / and / Khatrina”, “November 30, 2026 · 6:30 AM”, “Songs of love”,
-  gramophone selector. Curtain starts closed, tap to open (also unlocks audio).
+- “TWO HEARTS. ONE LOVE. ONE JOURNEY.”, “Join us as we say ‘I do.’”
+- The curtain that used to sit here (“Pull the curtain”, the portrait reveal) and
+  the “Songs of love” gramophone card are gone. Music lives in the floating
+  player only (see `06`).
 
 ## 7. Entourage
 
@@ -59,8 +60,8 @@ access gate is a courtesy screen, not access control (see `05`).
 
 ## 8. Our story
 
-- White film strip (left→right loop) + navy card, white text, clearly marked
-  sample story until the real story arrives.
+- White film strip (left→right loop) + navy card, white text. The couple's own
+  story text and photos replace the current ones (docs/07).
 
 ## 9. Wedding details (white floral frame)
 
