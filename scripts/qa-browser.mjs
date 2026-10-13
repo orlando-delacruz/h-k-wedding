@@ -69,13 +69,21 @@ async function seeSection(page, label, selector) {
 
 /** Type the access code and wait for the invitation to mount. */
 async function unlock(page, tag, code = CODE) {
+  // The gate is taller than a phone screen: scroll it first, so the run proves
+  // the invitation still opens on the hero.
   await page.fill('.gate-input', code)
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+  await page.waitForTimeout(300)
+  const gateScroll = await page.evaluate(() => Math.round(window.scrollY))
   await page.click('.gate-code-btn')
   await page.waitForTimeout(700)
-  check(`${tag}: entry curtain blocks the hero`, await page.locator('.entry-curtain').isVisible().catch(() => false))
+  check(`${tag}: gate was scrolled before unlocking`, gateScroll > 20, `scrollY=${gateScroll}`)
+  check(`${tag}: entrance curtain blocks the hero`, await page.locator('.entry-curtain').isVisible().catch(() => false))
   check(`${tag}: hero stays covered until the opening`, (await page.locator('.entry-curtain:not(.leaving)').count()) > 0)
   await page.click('.entry-skip')
   await page.waitForTimeout(1300)
+  const opened = await page.evaluate(() => Math.round(window.scrollY))
+  check(`${tag}: invitation opens at the top`, opened === 0, `scrollY=${opened}`)
   check(`${tag}: invitation opens with the configured code`, await page.locator('#top .hero-card').isVisible().catch(() => false))
   check(`${tag}: entry curtain is gone after unveiling`, (await page.locator('.entry-curtain').count()) === 0)
   const audioSrc = await page.locator('audio').evaluate((a) => a.currentSrc || a.src).catch(() => '')
@@ -112,7 +120,7 @@ try {
     await page.fill('.gate-input', `${CODE}X`)
     await page.click('.gate-code-btn')
     await page.waitForTimeout(400)
-    check(`${tag}: wrong code shows an error`, await page.locator('.code-panel .form-error').isVisible())
+    check(`${tag}: wrong code shows an error`, await page.locator('.gate-step .form-error').isVisible())
     check(`${tag}: wrong code keeps the invitation closed`, (await page.locator('#top .hero-card').count()) === 0)
 
     await unlock(page, tag)
@@ -128,7 +136,7 @@ try {
     await seeSection(page, `${tag}: calendar`, '#countdown .calendar-card')
     check(`${tag}: no in-details curtain`, (await page.locator('#music .curtain-wrap').count()) === 0)
     check(`${tag}: no gramophone card`, (await page.locator('#music .gramo-card').count()) === 0)
-    await seeSection(page, `${tag}: venue maps`, '#venue .mirror')
+    await seeSection(page, `${tag}: venue maps`, '#venue .map-frame')
     await seeSection(page, `${tag}: programme outline`, '.stage-list')
     await seeSection(page, `${tag}: story card`, '#story .story-card')
     check(`${tag}: entourage roles rendered`, (await page.locator('#entourage .ent-role').count()) >= 4)
@@ -146,9 +154,9 @@ try {
     }
     await page.locator('.mb-meta').click()
     await page.waitForTimeout(400)
-    check(`${tag}: player opens a song list`, await page.locator('.mb-menu .song-chip').first().isVisible().catch(() => false))
-    check(`${tag}: both songs are offered`, (await page.locator('.mb-menu .song-chip').count()) === 2)
-    await page.locator('.mb-menu .song-chip').nth(1).click()
+    check(`${tag}: player opens a song list`, await page.locator('.mb-menu .mb-track').first().isVisible().catch(() => false))
+    check(`${tag}: both songs are offered`, (await page.locator('.mb-menu .mb-track').count()) === 2)
+    await page.locator('.mb-menu .mb-track').nth(1).click()
     await page.waitForTimeout(1200)
     const picked = await page.locator('.mb-title').innerText().catch(() => '')
     check(`${tag}: choosing a song switches the track`, /Paninindigan/i.test(picked), picked)

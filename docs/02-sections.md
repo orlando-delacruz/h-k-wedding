@@ -1,22 +1,24 @@
-# 02 — Site Structure & Sections (order locked)
+# 02 — Site Structure & Sections
 
-Do not reorder. Mobile-first, one focus per viewport. Everything is public; the
-access gate is a courtesy screen, not access control (see `05`).
+Mobile-first, one focus per viewport. Everything is public; the access gate is a
+courtesy screen, not access control (see `05`). This is the order the page
+renders in — the source of truth is `src/App.jsx`.
 
-## 0. Access gate (first view)
+## 0. Access gate (view 0)
 
-- “Kindly respond first”: a button that opens the RSVP Form in a new tab (the
-  Form's confirmation shares the code), then the access-code field.
+- Two numbered steps, because guests kept missing the order: **1** answer the
+  RSVP Form in a new tab (the Form's confirmation shares the code), **2** enter
+  that code. The deadline sits under step 1.
 - Wrong code → inline error, invitation stays closed. A successful code first
-  unveils a full-screen velvet curtain (see `06`): it holds, parts slowly while
-  the default song starts, then reveals the hero. Shown once — never on refresh.
+  unveils the velvet entry curtain (see `06`), which opens while the default song
+  starts. Shown once — never on refresh.
 - A successful code is remembered on the device and re-checked on every load, so
   a refresh stays inside and rotating the code locks everyone out again.
 - Copy and the code live in `ACCESS` (`src/config/site.js`).
 
 ## 1. Invitation hero (a card, never an envelope — unveiled by the entry curtain)
 
-- Midnight-blue glitter bg + invitation card with animated gold border.
+- Midnight-blue glitter bg; the invitation copy sits on the background itself.
 - Copy from `03-copy.md` § Front-page invitation. Couple names in Pinyon Script.
 - Readable on 360px; reduced-motion shows static gold.
 
@@ -33,24 +35,26 @@ access gate is a courtesy screen, not access control (see `05`).
   before the code opens the page.
 - The Form owns fields, validation, submission, confirmation. See `05`.
 
-## 4. Venues + maps
-
-- “Wedding Ceremony Venue / Girasoles Farm Candelaria” + mirror-framed map.
-- “Reception Venue / Bride's Residence Sittio Bibingkahan Concepcion Uno Sariaya Quezon”
-  + mirror-framed map. Map URLs provisional until the owner supplies official links.
-
-## 5. Countdown + calendar
+## 4. Countdown + calendar
 
 - Live Days/Hours/Minutes/Seconds to Nov 30, 2026 06:30 Asia/Manila, never negative.
   Post-date: celebration message.
 - November 2026 calendar, Nov 30 gold-circled.
 
-## 6. Announcement
+## 5. Venues + maps
 
-- “TWO HEARTS. ONE LOVE. ONE JOURNEY.”, “Join us as we say ‘I do.’”
-- The curtain that used to sit here (“Pull the curtain”, the portrait reveal) and
-  the “Songs of love” gramophone card are gone. Music lives in the floating
-  player only (see `06`).
+- “Wedding Ceremony Venue / Girasoles Farm Candelaria” + a map in a gold frame.
+- “Reception Venue / Bride's Residence Sittio Bibingkahan Concepcion Uno Sariaya Quezon”
+  + a map in a gold frame. Map URLs provisional until the owner supplies official links.
+- Rendered once, from `PROGRAM.venues` in `program.js`; `id="venue"`.
+- The announcement lines (“TWO HEARTS. ONE LOVE. ONE JOURNEY.”, “Join us as we
+  say ‘I do.’”) were removed by the owner; music lives in the floating player
+  only (see `06`).
+
+## 6. Programme
+
+- “Order of the day”: only the 6:30 AM ceremony is confirmed, so the outline
+  stays deliberately short.
 
 ## 7. Entourage
 
@@ -66,8 +70,9 @@ access gate is a courtesy screen, not access control (see `05`).
 ## 9. Wedding details (white floral frame)
 
 - Floral frame: chrysanthemums + lilacs + 2 complementary types.
-- “ATTIRE GUIDE:” + placeholder image, “WEDDING TIMELINE:” placeholder,
-  “GIFT GUIDE:”, “REMINDER” / “With Respect” copy from `03-copy.md`.
+- “ATTIRE GUIDE:” + image, “GIFT GUIDE:”, “REMINDER” / “With Respect” copy from
+  `03-copy.md`. The timeline block appears only once the couple supplies its
+  image (`program.photos.timeline`).
 
 ## 10. Final slideshow
 

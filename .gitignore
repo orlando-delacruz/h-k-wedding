@@ -6,6 +6,9 @@ dist/
 .env.local
 .env.*.local
 
+# Vercel CLI link artifact (deploy via the dashboard)
+.vercel
+
 # RSVP workbooks and private exports
 data/
 
@@ -13,5 +16,3 @@ data/
 .DS_Store
 Thumbs.db
 *.log
-
-.vercel

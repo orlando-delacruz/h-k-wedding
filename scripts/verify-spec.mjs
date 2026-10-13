@@ -37,9 +37,10 @@ const checks = [
   ['the wedding of', app, 'The wedding of'],
   ['intro sub', app, 'November 30, 2026 · Girasoles Farm'],
 
-  /* ---- announcement (Section 7) ---- */
-  ['two hearts', stage, 'TWO HEARTS. ONE LOVE. ONE JOURNEY.'],
-  ['join us', stage, 'Join us as we say ‘I do.’'],
+  /* ---- announcement (Sections 7): removed by the owner ---- */
+  ['no announcement heading', stage, '___absent:TWO HEARTS___'],
+  ['no join-us line', stage, '___absent:Join us as we say___'],
+  ['no announcement section', stage, '___absent:id="music"___'],
   ['no in-details curtain', stage + styles, '___absent:curtain-panel___'],
   ['no reveal copy block', stage, '___absent:curtain-reveal___'],
   ['no gramophone card', stage + styles, '___absent:gramo-card___'],
@@ -75,8 +76,10 @@ const checks = [
   ['reception title', program, 'Reception Venue'],
   ['reception display name', program, "Bride's Residence Sittio Bibingkahan Concepcion Uno Sariaya Quezon"],
   ['reception address spelling', program, 'Sitio Bibingkahan'],
-  ['mirror frames', stage, 'mirror-face'],
-  ['light sweep on mirrors', styles, 'mirrorSweep'],
+  ['map sits in the gold frame', stage, 'map-frame'],
+  ['map is embedded', stage, 'map-embed'],
+  ['light sweep on the frame', styles, 'map-shine'],
+  ['no mirror left in the markup', stage, '___absent:mirror___'],
 
   /* ---- countdown + calendar (Section 12) ---- */
   ['days', app, 'Days'],

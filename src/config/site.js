@@ -9,26 +9,14 @@ export const SITE = {
   rsvpDeadline: 'PLEASE RESPOND BY NOVEMBER 15, 2026',
 }
 
-// Venue names and addresses are part of the public invitation; detailed maps are not.
-export const PUBLIC_VENUES = [
-  {
-    id: 'ceremony',
-    title: 'Wedding Ceremony Venue',
-    name: 'Girasoles Farm Candelaria',
-    address: 'Girasoles Farm, Candelaria, Quezon, Philippines',
-  },
-  {
-    id: 'reception',
-    title: 'Reception Venue',
-    name: "Bride's Residence Sittio Bibingkahan Concepcion Uno Sariaya Quezon",
-    address: "Bride's Residence, Sitio Bibingkahan, Concepcion Uno, Sariaya, Quezon, Philippines",
-  },
-]
+// Venue names, addresses and map links live in `program.js` (the Venues section
+// renders them once, with mirror-framed maps). Never duplicate them here.
 
 // Song catalogue. The couple's files live in public/music/ and ship with the
-// site; the player streams them from /music/<file>. Only these 2 tracks exist.
+// site; the player streams them from /music/<file>. Only these 2 tracks exist,
+// and the first one is the default.
 export const SONGS = [
-  { id: 'pahintulot', title: 'Pahintulot', file: 'pahintulot.mp3', isDefault: true },
+  { id: 'pahintulot', title: 'Pahintulot', file: 'pahintulot.mp3' },
   { id: 'paninindigan', title: 'Paninindigan kita', file: 'paninindigan-kita.mp3' },
 ]
 
@@ -60,9 +48,8 @@ export const ACCESS = {
   kicker: 'Kindly respond first',
   sub: 'Our RSVP form shares the access code that opens the full invitation.',
   formButton: 'Open the RSVP form',
-  formNote: 'Answer it first, then come back here with your code.',
+
   codeLabel: 'Access code',
-  codeHint: 'Shared with your RSVP confirmation. Not case-sensitive.',
   codeButton: 'Open our invitation',
   codeError: 'That code does not match. Please check it and try again.',
 }

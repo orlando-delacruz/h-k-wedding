@@ -25,7 +25,7 @@ Flat yellow borders are explicitly avoided.
   dividers, calendar highlight.
 - `.shiny-text` sweeps a 220%-wide gradient across text (`@keyframes shine`).
 - `.gold-frame` padding-box/border-box gradient border with corner brackets.
-- `.mirror-shine` sweeps venue mirrors every 6.5 s; `.tilt-glare` follows pointer.
+- `.map-shine` sweeps the venue map frame every 6.5 s; `.tilt-glare` follows pointer.
 - All stop under `prefers-reduced-motion: reduce`.
 
 ## Typography (approved only)
@@ -44,7 +44,6 @@ Flat yellow borders are explicitly avoided.
 | Illumination | player disc, CTA pulse | CSS keyframes |
 | Fade / reveal | all sections | `[data-reveal]` + `useReveal` |
 | Curtain (entry) | post-code reveal | midnight velvet + gold, 3D: ~1.4 s hold, ~3 s rotateY gather with parallax layers, music starts with it, tap to skip |
-| Curtain (music) | announcement | anime.js slide after 3 s hold, tap to open |
 | Film strip | Our Story | CSS marquee, pauses on hover |
 | Shine | names, hashtag, borders | CSS gradient animation |
 
@@ -66,9 +65,9 @@ src/components/
   Floral.jsx       chrysanthemum, lilac, rose, delphinium corners
   effects.jsx      ParticleField, useReveal, Tilt, CountUp, burstAt, ShinyText
   ui.jsx           SectionHeading, Divider, GoldFrame, Ornament, Field
-  chrome.jsx       BottomNav (all anchors), MusicBar (mini gramophone)
+  chrome.jsx       BottomNav (5 anchors), MusicBar (floating player + track list)
   AccessGate.jsx   first view: RSVP form hand-off + access-code field
   EntryCurtain.jsx full-screen velvet reveal after the code, starts the music
-  ProgramStage.jsx announcement, venues with maps, programme outline
+  ProgramStage.jsx venues in gold map frames, programme outline
   ErrorBoundary.jsx section-level failure fallback
 ```

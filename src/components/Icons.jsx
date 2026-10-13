@@ -24,3 +24,4 @@ export const PauseIcon = (p) => <S {...p}><rect x="6.6" y="4.8" width="3.6" heig
 export const ChevronDownIcon = (p) => <S {...p}><path d="m5.5 9 6.5 6.5L18.5 9" /></S>
 export const FlowerIcon = (p) => <S {...p}><circle cx="12" cy="12" r="2.4" /><path d="M12 9.6c0-2 .3-3.8 0-4.8-.4-1.3-2.6-1.3-3 0-.3 1 0 2.8 0 4.8M14.4 12c2 0 3.8.3 4.8 0 1.3-.4 1.3-2.6 0-3-1-.3-2.8 0-4.8 0M12 14.4c0 2-.3 3.8 0 4.8.4 1.3 2.6 1.3 3 0 .3-1 0-2.8 0-4.8M9.6 12c-2 0-3.8-.3-4.8 0-1.3.4-1.3 2.6 0 3 1 .3 2.8 0 4.8 0" /></S>
 export const CheckIcon = (p) => <S {...p}><path d="m4.5 12.8 5 5L19.5 6.8" /></S>
+export const RingIcon = (p) => <S {...p}><circle cx="12" cy="14.5" r="5.6" /><path d="m9 5.4 1.4-2.4h3.2L15 5.4 12 8.6 9 5.4Z" /><path d="M8.9 8.9 12 8.6l3.1.3" /></S>

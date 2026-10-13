@@ -18,7 +18,7 @@ Open **http://localhost:5173**.
    guest out again.
 
 Then scroll hero → footer. Every section renders with content: invitation card,
-portrait, RSVP form, venues, countdown + calendar, announcement + gramophone,
+portrait, countdown + calendar, venues with gold-framed maps,
 story, entourage, details, slideshow, footer.
 
 ## 2. RSVP form

@@ -10,9 +10,9 @@ function petals(cx, cy, count, rx, ry, rotate = 0) {
   })
 }
 
-export function Chrysanthemum({ x = 0, y = 0, s = 1, className = '' }) {
+function Chrysanthemum({ x = 0, y = 0, s = 1 }) {
   return (
-    <g transform={`translate(${x} ${y}) scale(${s})`} className={className}>
+    <g transform={`translate(${x} ${y}) scale(${s})`} >
       <circle cx="0" cy="0" r="3" />
       {petals(0, -7, 8, 2.6, 6)}
       <g transform="rotate(22.5)">{petals(0, -10.5, 8, 3.2, 5.4, 12)}</g>
@@ -21,13 +21,13 @@ export function Chrysanthemum({ x = 0, y = 0, s = 1, className = '' }) {
   )
 }
 
-export function Lilac({ x = 0, y = 0, s = 1, className = '' }) {
+function Lilac({ x = 0, y = 0, s = 1 }) {
   const florets = [
     [0, 0, 3.1], [-4.5, -5.5, 2.8], [4.5, -5.5, 2.8], [-2.5, -11, 2.5],
     [2.5, -11, 2.5], [0, -16.5, 2.2], [-1.5, -22, 1.8], [1.5, -22, 1.8], [0, -27, 1.4],
   ]
   return (
-    <g transform={`translate(${x} ${y}) scale(${s})`} className={className}>
+    <g transform={`translate(${x} ${y}) scale(${s})`} >
       <path d="M0 4v-32" />
       {florets.map(([fx, fy, r], i) => (
         <g key={i}>
@@ -38,9 +38,9 @@ export function Lilac({ x = 0, y = 0, s = 1, className = '' }) {
   )
 }
 
-export function Rose({ x = 0, y = 0, s = 1, className = '' }) {
+function Rose({ x = 0, y = 0, s = 1 }) {
   return (
-    <g transform={`translate(${x} ${y}) scale(${s})`} className={className}>
+    <g transform={`translate(${x} ${y}) scale(${s})`} >
       <path d="M0 -9c4.5 0 8 3.4 8 7.6S4.4 6.6 0 6.6-8 2.8-8-1.4-4.5-9 0-9Z" />
       <path d="M0 -4.6c2.5 0 4.4 1.9 4.4 4.2S2.4 3.8 0 3.8s-4.4-1.9-4.4-4.2S-2.5-4.6 0-4.6Z" />
       <path d="M0 -1c1.1 0 2 .8 2 1.8S1.1 2.6 0 2.6s-2-.8-2-1.8S-1.1-1 0-1Z" />
@@ -50,10 +50,10 @@ export function Rose({ x = 0, y = 0, s = 1, className = '' }) {
   )
 }
 
-export function Delphinium({ x = 0, y = 0, s = 1, className = '' }) {
+function Delphinium({ x = 0, y = 0, s = 1 }) {
   const flowers = [[0, -2], [-6, -7.5], [6, -7.5], [-2, -13], [2, -13], [-5, -18.5], [5, -18.5], [0, -24], [0, -30]]
   return (
-    <g transform={`translate(${x} ${y}) scale(${s})`} className={className}>
+    <g transform={`translate(${x} ${y}) scale(${s})`} >
       <path d="M0 6v-38" />
       {flowers.map(([fx, fy], i) => (
         <g key={i} transform={`translate(${fx} ${fy})`}>

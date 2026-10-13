@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   HomeIcon, ChurchIcon, MailIcon, UsersIcon, FlowerIcon,
-  MusicIcon, PlayIcon, PauseIcon, CheckIcon,
+  MusicIcon, PlayIcon, PauseIcon,
 } from './Icons.jsx'
 
 /** All anchors: every section is public, no access gate. Capped at 5 items so
@@ -87,17 +87,27 @@ export function MusicBar({ visible, songs, songIdx, playing, onToggle, onSelectS
     <div className={`music-bar-wrap ${visible ? 'show' : ''} ${collapsed ? 'collapsed' : ''}`}>
       {picking && !collapsed && (
         <div className="mb-menu" role="group" aria-label="Choose a song">
-          {songs.map((s, i) => (
-            <button
-              key={s.id}
-              className={`song-chip ${i === songIdx ? 'active' : ''}`}
-              aria-pressed={i === songIdx}
-              onClick={() => { onSelectSong(i); setPicking(false) }}
-            >
-              {i === songIdx ? <CheckIcon size={13} /> : <MusicIcon size={13} />}
-              {s.title}
-            </button>
-          ))}
+          <p className="mb-menu-label">Choose a song</p>
+          {songs.map((s, i) => {
+            const current = i === songIdx
+            return (
+              <button
+                key={s.id}
+                className={`mb-track ${current ? 'on' : ''} ${current && playing ? 'playing' : ''}`}
+                aria-pressed={current}
+                onClick={() => { onSelectSong(i); setPicking(false) }}
+              >
+                <span className="mb-track-disc" aria-hidden="true"><span /></span>
+                <span className="mb-track-copy">
+                  <b>{s.title}</b>
+                  <small>{current ? (playing ? 'Now playing' : 'Paused') : 'Tap to play'}</small>
+                </span>
+                <span className="mb-track-state" aria-hidden="true">
+                  {current && playing ? <span className="eq"><i /><i /><i /><i /></span> : <PlayIcon size={15} />}
+                </span>
+              </button>
+            )
+          })}
         </div>
       )}
       <div className={`music-bar ${playing ? 'is-playing' : ''} ${collapsed ? 'collapsed' : ''}`}>

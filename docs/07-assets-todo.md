@@ -28,7 +28,7 @@ All placeholders allowed until real assets arrive. Keep paths stable so swap is 
 ## 4. Audio (couple-supplied, ships with the site)
 
 - [x] `pahintulot.mp3` (default), `paninindigan-kita.mp3` in `public/music/`
-- Only these 2 tracks: the gramophone lists exactly `SONGS` from
+- Only these 2 tracks: the player lists exactly `SONGS` from
   `src/config/site.js`. Adding a track means adding the file + one entry.
 - Confirm licensing for both recordings; keep each file <8MB if possible.
 

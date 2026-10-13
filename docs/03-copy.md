@@ -26,12 +26,12 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
   confirmation. Intended fields: guest's full name, attendance confirmation,
   first/second companion full names, message for the couple.
 
-## Announcement + music
+## Music
 
-- “TWO HEARTS. ONE LOVE. ONE JOURNEY.”
-- “Join us as we say “I do.””
-- Songs: Pahintulot, Paninindigan Kita. (The “Songs of love” label and the
-  gramophone card were removed; the floating player shows the track name.)
+- Songs: Pahintulot, Paninindigan Kita. The player lists them with the current
+  track marked; nothing else labels the music on the page.
+- Removed by the owner: the announcement lines (“TWO HEARTS. ONE LOVE. ONE
+  JOURNEY.”, “Join us as we say ‘I do.’”) and the “Songs of love” card.
 
 ## Venues
 

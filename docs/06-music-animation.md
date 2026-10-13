@@ -2,15 +2,14 @@
 
 ## Songs
 
-- Default: Pahintulot
+- Default (plays first): Pahintulot
 - Second choice: Paninindigan Kita
-- Label: “Songs of love”
-- Files ship with the site in `public/music/` (see 07). The gramophone and the
-  entry curtain both play from these local files — no demo streams anywhere.
+- Files ship with the site in `public/music/` (see 07). The player streams them
+  from `/music/<file>` — no demo streams anywhere.
 
 ## The player
 
-- The floating mini-gramophone (`MusicBar` in `chrome.jsx`) is the **only** music
+- The floating player (`MusicBar` in `chrome.jsx`) is the **only** music
   UI: no player section, no “Songs of love” card.
 - Vinyl disc = play/pause. Nameplate = the song list (both tracks, current one
   ticked). Choosing a track plays it immediately.
@@ -53,8 +52,8 @@
 
 - Starts closed, pauses 3s, opens center → sides to reveal the portrait.
 - Reduced-motion: skip slide, keep content readable.
-- Copy: “TWO HEARTS. ONE LOVE. ONE JOURNEY.”, “Join us as we say ‘I do.’”,
-  “Harthwel / and / Khatrina”, “November 30, 2026 · 6:30 AM”.
+- The announcement copy that used to sit above the curtain was removed by the
+  owner, along with the “Songs of love” card.
 
 ## Other motion
 

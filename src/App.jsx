@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { SITE, PUBLIC_VENUES, SONGS, PHOTOS, ACCESS } from './config/site.js'
+import { SITE, SONGS, PHOTOS, ACCESS } from './config/site.js'
 import { PROGRAM } from './config/program.js'
 import { PRINCIPAL_ROLES, PRINCIPAL_SPONSORS, SECONDARY_PAIRED, OTHER_MEMBERS } from './config/entourage.js'
 import { ParticleField, Tilt, CountUp, useReveal, ShinyText } from './components/effects.jsx'
@@ -11,7 +11,7 @@ import AccessGate from './components/AccessGate.jsx'
 import EntryCurtain from './components/EntryCurtain.jsx'
 import { FloralCorner } from './components/Floral.jsx'
 import {
-  CalendarIcon, MapPinIcon, ChurchIcon, HomeIcon, MusicIcon, HeartIcon, GiftIcon,
+  CalendarIcon, MapPinIcon, HomeIcon, MusicIcon, HeartIcon, GiftIcon,
   DressIcon, CameraOffIcon, UsersIcon, ClockIcon, ScrollIcon,
   ChevronDownIcon, FlowerIcon, SparkleIcon,
 } from './components/Icons.jsx'
@@ -91,6 +91,18 @@ export default function App() {
 function InvitationPage({ startWithCurtain }) {
   // One reveal scan covers everything; this page mounts after the gate opens.
   useReveal()
+
+  /* A guest may have scrolled the gate (it is taller than a phone screen)
+     before unlocking, so a fresh confirmation always opens on the hero. A
+     refresh — no curtain — keeps whatever place they were reading. */
+  useEffect(() => {
+    if (!startWithCurtain) return
+    const html = document.documentElement
+    const prev = html.style.scrollBehavior
+    html.style.scrollBehavior = 'auto' // don't animate past the hero
+    window.scrollTo(0, 0)
+    html.style.scrollBehavior = prev
+  }, [startWithCurtain])
 
   // The entry curtain owns the first seconds: it blocks the hero, then parts
   // while the default song starts. Stored unlocks skip it entirely.
@@ -200,25 +212,10 @@ function InvitationPage({ startWithCurtain }) {
         </div>
       </section>
 
-      {/* ————— Venues ————— */}
-      <section id="venue" className="sec venue-sec">
-        <SectionHeading icon={MapPinIcon} kicker="Two places, one celebration" title="The Venues" sub="Tap a mirror to open in Google Maps" />
-        {PUBLIC_VENUES.map((v, i) => (
-          <div className="venue-block public-venue" key={v.id} {...dly(i, 140)}>
-            <div className="venue-title">
-              <span className="venue-icon">{v.id === 'ceremony' ? <ChurchIcon size={20} /> : <HomeIcon size={20} />}</span>
-              <h3>{v.title}</h3>
-            </div>
-            <p className="venue-name">{v.name}</p>
-            <p className="venue-address">{v.address}</p>
-          </div>
-        ))}
-      </section>
-
       {/* ————— 7 · Countdown + calendar ————— */}
       <CountdownSection />
 
-      {/* ————— Programme: announcement, venues, story, entourage, details, gallery ————— */}
+      {/* ————— Programme: announcement, venues, programme, story, entourage, details, gallery ————— */}
       <ErrorBoundary>
         <ProgramStage program={PROGRAM} />
         <StorySection program={PROGRAM} />
@@ -284,21 +281,27 @@ function EntourageSection() {
       </div>
       <div className="ent-block" data-reveal>
         <h3 className="ent-block-title"><SparkleIcon size={16} /> PRINCIPAL SPONSORS</h3>
-        <div className="sponsor-grid">
-          {PRINCIPAL_SPONSORS.map((s, i) => (
-            <div className="sponsor" key={s} {...dly(i, 45)}><em>{String(i + 1).padStart(2, '0')}</em><span>{s}</span></div>
-          ))}
+        <div className="pair-grid">
+          {PRINCIPAL_SPONSORS.map((sponsor, i) => {
+            const [first, second] = sponsor.split(' & ')
+            return (
+              <div className="pair-card" key={sponsor} {...dly(i, 40)}>
+                <em>#{String(i + 1).padStart(2, '0')}</em>
+                <span>{first}</span>
+                <i className="pair-heart"><HeartIcon size={13} /></i>
+                <span>{second}</span>
+              </div>
+            )
+          })}
         </div>
       </div>
       <div className="ent-block" data-reveal>
         <h3 className="ent-block-title"><SparkleIcon size={16} /> SECONDARY SPONSORS</h3>
-        <div className="pair-grid">
+        <div className="sponsor-grid">
           {SECONDARY_PAIRED.map(([groomsman, bridesmaid], i) => (
-            <div className="pair-card" key={groomsman} {...dly(i, 40)}>
-              <em>#{String(i + 1).padStart(2, '0')}</em>
-              <span>{groomsman}</span>
-              <i className="pair-heart"><HeartIcon size={13} /></i>
-              <span>{bridesmaid}</span>
+            <div className="sponsor" key={groomsman} {...dly(i, 45)}>
+              <em>{String(i + 1).padStart(2, '0')}</em>
+              <span>{groomsman} &amp; {bridesmaid}</span>
             </div>
           ))}
         </div>
@@ -337,10 +340,11 @@ function StorySection({ program }) {
       </div>
       <div className="wrap">
         <div className="story-card" data-reveal>
+          <span className="story-quote" aria-hidden="true">“</span>
           <ScrollIcon size={22} className="story-icon" />
-          <p>{program.story}</p>
+          <p className="story-text">{program.story}</p>
           <Divider />
-          <p className="story-sign script">Harthwel & Khatrina</p>
+          <p className="story-sign script">Harthwel &amp; Khatrina</p>
         </div>
       </div>
     </section>
@@ -359,17 +363,18 @@ function DetailsSection({ program }) {
         <span className="floral-corner bl"><FloralCorner /></span>
         <span className="floral-corner br"><FloralCorner /></span>
 
-        <p className="floral-legend">
-          <span className="mid"><i />Midnight</span>
-          <span className="nav"><i />Navy</span>
-          <span className="wht"><i />White</span>
-          <span className="gld"><i />Gold</span>
-        </p>
-
         <article className="detail-block">
           <h3><DressIcon size={20} /> ATTIRE GUIDE</h3>
           <Divider />
           <p>We would be honored if you could join us in your best attire. Let's make our special day more memorable in these colors.</p>
+
+          <p className="floral-legend">
+            <span className="mid"><i />Midnight</span>
+            <span className="nav"><i />Navy</span>
+            <span className="wht"><i />White</span>
+            <span className="gld"><i />Gold</span>
+          </p>
+
           {program?.photos?.attireGuide && (
             <Tilt max={5} className="detail-img-tilt">
               <img src={program.photos.attireGuide} alt="Attire guide" loading="lazy" className="detail-img" />

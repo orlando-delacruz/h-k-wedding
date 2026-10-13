@@ -38,7 +38,6 @@ export const PROGRAM = {
 
   // Photos remain placeholder URLs; the couple supplies the real set later.
   photos: {
-    curtainPortrait: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1200&auto=format&fit=crop',
     strip: [
       'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1200&auto=format&fit=crop',
