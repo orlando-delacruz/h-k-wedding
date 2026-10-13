@@ -1,8 +1,20 @@
 # 02 — Site Structure & Sections (order locked)
 
-Do not reorder. Mobile-first, one focus per viewport. Everything is public.
+Do not reorder. Mobile-first, one focus per viewport. Everything is public; the
+access gate is a courtesy screen, not access control (see `05`).
 
-## 1. Invitation hero (opening screen — a card, never an envelope)
+## 0. Access gate (first view)
+
+- “Kindly respond first”: a button that opens the RSVP Form in a new tab (the
+  Form's confirmation shares the code), then the access-code field.
+- Wrong code → inline error, invitation stays closed. A successful code first
+  unveils a full-screen velvet curtain (see `06`): it holds, parts slowly while
+  the default song starts, then reveals the hero. Shown once — never on refresh.
+- A successful code is remembered on the device and re-checked on every load, so
+  a refresh stays inside and rotating the code locks everyone out again.
+- Copy and the code live in `ACCESS` (`src/config/site.js`).
+
+## 1. Invitation hero (a card, never an envelope — unveiled by the entry curtain)
 
 - Midnight-blue glitter bg + invitation card with animated gold border.
 - Copy from `03-copy.md` § Front-page invitation. Couple names in Pinyon Script.
@@ -13,11 +25,12 @@ Do not reorder. Mobile-first, one focus per viewport. Everything is public.
 - Portrait image, “The wedding of”, “Harthwel & Khatrina”,
   “November 30, 2026 · Girasoles Farm”. Names in Pinyon Script.
 
-## 3. RSVP (embedded Google Form)
+## 3. RSVP (gate only — no in-page section)
 
-- Heading “RSVP” (Cormorant Garamond Bold Italic), deadline
-  “PLEASE RESPOND BY NOVEMBER 15, 2026”.
-- Form iframe (`RSVP_FORM.embedUrl`) + “Open RSVP Form” new-tab fallback.
+- The Google Form is reached from the access gate (view 0), which shows the
+  deadline “PLEASE RESPOND BY NOVEMBER 15, 2026” and the new-tab button.
+- It is deliberately not embedded inside the invitation: guests answer it once,
+  before the code opens the page.
 - The Form owns fields, validation, submission, confirmation. See `05`.
 
 ## 4. Venues + maps

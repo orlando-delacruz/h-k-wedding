@@ -1,7 +1,17 @@
 node_modules/
 dist/
 
+# Local env and credentials — never commit
+.env
+.env.local
+.env.*.local
+
+# RSVP workbooks and private exports
+data/
+
 # Editor and OS noise
 .DS_Store
 Thumbs.db
 *.log
+
+.vercel

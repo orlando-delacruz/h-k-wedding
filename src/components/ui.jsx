@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { SparkleIcon } from './Icons.jsx'
 
 export function SectionHeading({ icon: Icon, kicker, title, sub, light = false, className = '' }) {
@@ -45,17 +45,20 @@ export function GoldFrame({ children, className = '', corners = true, label }) {
 }
 
 export function Ornament() {
+  // useId keeps the gradient id unique: the hero, the footer and the entry
+  // curtain all render this ornament on the same page.
+  const gid = `gold-${useId().replace(/:/g, '')}`
   return (
     <div className="ornament" aria-hidden="true">
       <svg viewBox="0 0 240 34" width="220" height="31" fill="none">
-        <path d="M6 17h58" stroke="url(#g1)" strokeWidth="1.2" />
-        <path d="M176 17h58" stroke="url(#g1)" strokeWidth="1.2" />
-        <path d="M120 5.5c4 5 9 6.5 15 19.5-6-13-11.5-14-15-14s-9 1-15 14c6-13 11-14.5 15-19.5Z" stroke="url(#g1)" strokeWidth="1.2" transform="translate(-15 0.6)" />
-        <circle cx="120" cy="17" r="2.4" fill="url(#g1)" />
-        <circle cx="104" cy="17" r="1.5" fill="url(#g1)" />
-        <circle cx="136" cy="17" r="1.5" fill="url(#g1)" />
+        <path d="M6 17h58" stroke={`url(#${gid})`} strokeWidth="1.2" />
+        <path d="M176 17h58" stroke={`url(#${gid})`} strokeWidth="1.2" />
+        <path d="M120 5.5c4 5 9 6.5 15 19.5-6-13-11.5-14-15-14s-9 1-15 14c6-13 11-14.5 15-19.5Z" stroke={`url(#${gid})`} strokeWidth="1.2" />
+        <circle cx="120" cy="17" r="2.4" fill={`url(#${gid})`} />
+        <circle cx="104" cy="17" r="1.5" fill={`url(#${gid})`} />
+        <circle cx="136" cy="17" r="1.5" fill={`url(#${gid})`} />
         <defs>
-          <linearGradient id="g1" x1="0" y1="0" x2="240" y2="34" gradientUnits="userSpaceOnUse">
+          <linearGradient id={gid} x1="0" y1="0" x2="240" y2="34" gradientUnits="userSpaceOnUse">
             <stop stopColor="#BF953F" /><stop offset=".35" stopColor="#FCF6BA" /><stop offset=".6" stopColor="#AA771C" /><stop offset="1" stopColor="#BF953F" />
           </linearGradient>
         </defs>

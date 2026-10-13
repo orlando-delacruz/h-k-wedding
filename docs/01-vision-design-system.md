@@ -43,7 +43,8 @@ Flat yellow borders are explicitly avoided.
 | Glitter | hero + background | `ParticleField` canvas |
 | Illumination | vinyl, CTA pulse | CSS keyframes |
 | Fade / reveal | all sections | `[data-reveal]` + `useReveal` |
-| Curtain | announcement | anime.js slide after 3 s hold, tap to open |
+| Curtain (entry) | post-code reveal | midnight velvet + gold, 3D: ~1.4 s hold, ~3 s rotateY gather with parallax layers, music starts with it, tap to skip |
+| Curtain (music) | announcement | anime.js slide after 3 s hold, tap to open |
 | Film strip | Our Story | CSS marquee, pauses on hover |
 | Shine | names, hashtag, borders | CSS gradient animation |
 
@@ -64,8 +65,10 @@ src/components/
   Icons.jsx        hand-rolled stroke icons (no icon dependency)
   Floral.jsx       chrysanthemum, lilac, rose, delphinium corners
   effects.jsx      ParticleField, useReveal, Tilt, CountUp, burstAt, ShinyText
-  ui.jsx           SectionHeading, Divider, GoldFrame, Ornament
-  chrome.jsx       BottomNav (all anchors), MusicBar
+  ui.jsx           SectionHeading, Divider, GoldFrame, Ornament, Field
+  chrome.jsx       BottomNav (all anchors), MusicBar (mini gramophone)
+  AccessGate.jsx   first view: RSVP form hand-off + access-code field
+  EntryCurtain.jsx full-screen velvet reveal after the code, starts the music
   ProgramStage.jsx curtain reveal, gramophone, venues, programme outline
   ErrorBoundary.jsx section-level failure fallback
 ```

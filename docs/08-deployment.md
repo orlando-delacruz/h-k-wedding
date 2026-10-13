@@ -1,12 +1,28 @@
 # 08 — Deployment (static site)
 
-There is no backend, no database, no environment variables, no Blob store.
+There is no backend, no database, no Blob store.
+
+## Environment variables
+
+One variable, and it is public by design:
+
+```
+VITE_ACCESS_CODE=<the code guests receive with their RSVP confirmation>
+```
+
+Set it in Vercel → Project → Settings → Environment Variables (Production and
+Preview) and in `.env` locally. Vite inlines it into the browser bundle, so it is
+a courtesy code, not a secret. If it is missing, the build falls back to the
+placeholder in `src/config/site.js` and guests will be told a code that does not
+work — always set it.
 
 ## Vercel
 
 1. Push to GitHub, import in Vercel (Vite preset).
-2. No env vars to set. `vercel.json` builds `dist/` only — no functions.
-3. Deploy. Verify: open the live URL on mobile + desktop.
+2. Set `VITE_ACCESS_CODE` (above).
+3. `vercel.json` builds `dist/` only — no functions.
+4. Deploy. Verify: open the live URL on mobile + desktop, enter the code, and
+   confirm the RSVP form still loads.
 
 ## Local development
 

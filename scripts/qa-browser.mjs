@@ -1,18 +1,28 @@
 /**
  * Browser end-to-end tests for the public invitation site + mobile audit.
- * Runs headless Chrome against the Vite dev server. No backend exists:
- * every section is public and must render, paint, and fit small screens.
+ * Runs headless Chrome against the Vite dev server. The RSVP form is a Google
+ * Form and the access code comes from `src/config/site.js`; the suite reads that
+ * value so the two never drift apart.
  *
  * Run:  npm run dev                  (in another terminal)
  *       npm run test:ui
  */
 import { chromium } from 'playwright-core'
+import { loadEnv } from 'vite'
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 
 const BASE = process.env.URL || 'http://localhost:5173'
 const CHROME = process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'
-const SHOT_DIR = process.env.SHOT_DIR || 'C:/Users/SSD-ORLANDO/AppData/Local/Temp/hk-shots'
+const SHOT_DIR = process.env.SHOT_DIR || path.join(os.tmpdir(), 'hk-shots')
+
+const siteConfig = fs.readFileSync(path.join(process.cwd(), 'src', 'config', 'site.js'), 'utf8')
+const FORM_LINK = siteConfig.match(/linkUrl:\s*'([^']+)'/)[1]
+// Resolve the gate code the way Vite does: shell env + .env files, then the
+// fallback constant in site.js.
+const env = loadEnv('development', process.cwd(), 'VITE_')
+const CODE = (env.VITE_ACCESS_CODE || '').trim() || siteConfig.match(/FALLBACK_ACCESS_CODE = '([^']+)'/)[1]
 
 const results = []
 const check = (name, ok, detail = '') => {
@@ -57,6 +67,30 @@ async function seeSection(page, label, selector) {
   return visible && opacity > 0.5
 }
 
+/** Type the access code and wait for the invitation to mount. */
+async function unlock(page, tag, code = CODE) {
+  await page.fill('.gate-input', code)
+  await page.click('.gate-code-btn')
+  await page.waitForTimeout(700)
+  check(`${tag}: entry curtain blocks the hero`, await page.locator('.entry-curtain').isVisible().catch(() => false))
+  check(`${tag}: hero stays covered until the opening`, (await page.locator('.entry-curtain:not(.leaving)').count()) > 0)
+  await page.click('.entry-skip')
+  await page.waitForTimeout(1300)
+  check(`${tag}: invitation opens with the configured code`, await page.locator('#top .hero-card').isVisible().catch(() => false))
+  check(`${tag}: entry curtain is gone after unveiling`, (await page.locator('.entry-curtain').count()) === 0)
+  const audioSrc = await page.locator('audio').evaluate((a) => a.currentSrc || a.src).catch(() => '')
+  check(`${tag}: player serves the local track`, (audioSrc || '').includes('/music/'), audioSrc)
+  // Headless autoplay may still be settling: accept playing now or the tap
+  // fallback the player shows when the browser refused.
+  let sounding = false
+  for (let i = 0; i < 10 && !sounding; i++) {
+    sounding = await page.locator('.music-bar.is-playing').isVisible().catch(() => false)
+      || await page.locator('.gramo-fallback').isVisible().catch(() => false)
+    if (!sounding) await page.waitForTimeout(1000)
+  }
+  check(`${tag}: music starts or offers tap-to-play`, sounding)
+}
+
 const browser = await chromium.launch({ executablePath: CHROME, headless: true })
 
 try {
@@ -65,18 +99,36 @@ try {
     const ctx = await browser.newContext({ viewport })
     const { page, crashes } = await openPage(ctx)
 
+    /* ----------------------------- access gate ------------------------------- */
+    check(`${tag}: first view is the access gate`, await page.locator('.access-gate').isVisible())
+    check(`${tag}: invitation is not mounted while locked`, (await page.locator('#top .hero-card').count()) === 0)
+    check(`${tag}: no chrome while locked`, (await page.locator('.bottom-nav.show').count()) === 0)
+    const formHref = await page.locator('.gate-form-btn').getAttribute('href').catch(() => '')
+    check(`${tag}: gate links to the Google Form`, formHref === FORM_LINK, formHref)
+    check(`${tag}: gate form button opens a new tab`, await page.locator('.gate-form-btn').getAttribute('target') === '_blank')
+    check(`${tag}: gate shows the RSVP deadline`, /NOVEMBER 15, 2026/.test(await page.locator('.gate-deadline').innerText().catch(() => '')))
+    await noOverflow(page, `${tag}: gate`)
+
+    await page.fill('.gate-input', `${CODE}X`)
+    await page.click('.gate-code-btn')
+    await page.waitForTimeout(400)
+    check(`${tag}: wrong code shows an error`, await page.locator('.code-panel .form-error').isVisible())
+    check(`${tag}: wrong code keeps the invitation closed`, (await page.locator('#top .hero-card').count()) === 0)
+
+    await unlock(page, tag)
+    check(`${tag}: chrome appears once unlocked`, await page.locator('.bottom-nav.show').isVisible())
+
     /* ------------------------- invitation hero → footer ------------------------ */
     check(`${tag}: no envelope intro overlay`, (await page.locator('.intro').count()) === 0)
-    check(`${tag}: no program gate`, (await page.locator('.gate-panel').count()) === 0)
     await seeSection(page, `${tag}: hero invitation card`, '#top .hero-card')
     await seeSection(page, `${tag}: portrait`, '#portrait .portrait-img')
-    await seeSection(page, `${tag}: rsvp card`, '#rsvp .rsvp-card')
+    check(`${tag}: invitation has no RSVP section`, (await page.locator('#rsvp').count()) === 0)
     await seeSection(page, `${tag}: venues`, '#venue .venue-block')
     check(`${tag}: countdown shows 4 boxes`, (await page.locator('#countdown .count-box').count()) === 4)
     await seeSection(page, `${tag}: calendar`, '#countdown .calendar-card')
     await seeSection(page, `${tag}: curtain`, '#music .curtain-wrap')
     await seeSection(page, `${tag}: gramophone`, '#music .gramo-card')
-    check(`${tag}: 3 songs listed`, (await page.locator('#music .song-chip').count()) === 3)
+    check(`${tag}: 2 songs listed`, (await page.locator('#music .song-chip').count()) === 2)
     await seeSection(page, `${tag}: venue maps`, '#venue .mirror')
     await seeSection(page, `${tag}: programme outline`, '.stage-list')
     await seeSection(page, `${tag}: story card`, '#story .story-card')
@@ -87,16 +139,6 @@ try {
     await seeSection(page, `${tag}: footer`, '.footer')
     await noOverflow(page, `${tag}: full page`)
 
-    /* ------------------------------ rsvp form embed ---------------------------- */
-    check(`${tag}: facade offers one-tap form load`, await page.locator('#rsvp button:has-text("Load RSVP Form")').isVisible())
-    await page.locator('#rsvp button:has-text("Load RSVP Form")').click()
-    await page.waitForTimeout(2500)
-    const frameSrc = await page.locator('#rsvp iframe[title="RSVP form"]').getAttribute('src').catch(() => '')
-    check(`${tag}: form iframe loads on tap with configured URL`, (frameSrc || '').includes('docs.google.com/forms/d/e/'), frameSrc)
-    const formHref = await page.locator('#rsvp a:has-text("Open RSVP Form")').getAttribute('href').catch(() => '')
-    check(`${tag}: fallback link points at the Google Form`, /forms\.gle/.test(formHref || ''), formHref)
-    check(`${tag}: fallback opens a new tab`, await page.locator('#rsvp a:has-text("Open RSVP Form")').getAttribute('target') === '_blank')
-
     /* --------------------------------- curtain --------------------------------- */
     await page.locator('#music .curtain-cta').click().catch(() => {})
     await page.waitForTimeout(6500)
@@ -105,7 +147,7 @@ try {
 
     /* --------------------------------- chrome ---------------------------------- */
     const navCount = await page.locator('.bottom-nav a').count()
-    check(`${tag}: bottom nav shows all anchors`, navCount === 8, `links=${navCount}`)
+    check(`${tag}: bottom nav shows all anchors`, navCount === 7, `links=${navCount}`)
     const navFits = await page.evaluate(() => {
       const nav = document.querySelector('.bottom-nav')
       return nav ? nav.scrollWidth <= nav.clientWidth + 1 : false
@@ -123,6 +165,18 @@ try {
       fs.mkdirSync(SHOT_DIR, { recursive: true })
       await page.screenshot({ path: path.join(SHOT_DIR, 'mobile-360-full.png'), fullPage: true })
     }
+
+    /* ------------------------- unlock persistence ------------------------------ */
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(1200)
+    check(`${tag}: a refresh keeps the guest inside`, await page.locator('#top .hero-card').isVisible().catch(() => false))
+    check(`${tag}: no entry curtain on refresh`, (await page.locator('.entry-curtain').count()) === 0)
+
+    await page.evaluate(() => localStorage.setItem('hk_access', 'ROTATED-CODE'))
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(900)
+    check(`${tag}: a rotated code locks the page again`, await page.locator('.access-gate').isVisible().catch(() => false))
+
     check(`${tag}: no page crash or console error`, crashes.length === 0, crashes.join(' | ').slice(0, 400))
     await ctx.close()
   }

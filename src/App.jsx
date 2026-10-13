@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { SITE, PUBLIC_VENUES, SONGS, FALLBACK_AUDIO, PHOTOS, RSVP_FORM } from './config/site.js'
+import { SITE, PUBLIC_VENUES, SONGS, PHOTOS, ACCESS } from './config/site.js'
 import { PROGRAM } from './config/program.js'
 import { PRINCIPAL_ROLES, PRINCIPAL_SPONSORS, SECONDARY_PAIRED, OTHER_MEMBERS } from './config/entourage.js'
 import { ParticleField, Tilt, CountUp, useReveal, ShinyText } from './components/effects.jsx'
@@ -7,10 +7,12 @@ import { SectionHeading, Divider, GoldFrame, Ornament } from './components/ui.js
 import { BottomNav, MusicBar } from './components/chrome.jsx'
 import ProgramStage from './components/ProgramStage.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import AccessGate from './components/AccessGate.jsx'
+import EntryCurtain from './components/EntryCurtain.jsx'
 import { FloralCorner } from './components/Floral.jsx'
 import {
-  CalendarIcon, MapPinIcon, ChurchIcon, HomeIcon, MusicIcon, HeartIcon, RingIcon, GiftIcon,
-  DressIcon, CameraOffIcon, UsersIcon, ClockIcon, MailIcon, ScrollIcon,
+  CalendarIcon, MapPinIcon, ChurchIcon, HomeIcon, MusicIcon, HeartIcon, GiftIcon,
+  DressIcon, CameraOffIcon, UsersIcon, ClockIcon, ScrollIcon,
   ChevronDownIcon, FlowerIcon, SparkleIcon,
 } from './components/Icons.jsx'
 
@@ -52,16 +54,55 @@ function Calendar() {
   )
 }
 
+const STORE_KEY = 'hk_access'
+
+/* The unlock is remembered on the device so a refresh never sends a guest back
+   to the gate — but only while the stored code still matches `ACCESS.code`.
+   Rotating the code (the couple's revocation lever) closes the door again. */
+function readStoredUnlock() {
+  try {
+    const saved = localStorage.getItem(STORE_KEY)
+    if (!saved) return false
+    if (saved.toUpperCase() === ACCESS.code.toUpperCase()) return true
+    localStorage.removeItem(STORE_KEY)
+    return false
+  } catch {
+    return false // private mode: ask for the code, never break the page
+  }
+}
+
 export default function App() {
-  // All content is public and mounts at once; one reveal scan covers everything.
+  const [unlocked, setUnlocked] = useState(readStoredUnlock)
+  // Fresh code entry only: the entry curtain never shows on refresh, only in
+  // the moment the guest earns their way inside.
+  const [freshEntry, setFreshEntry] = useState(false)
+
+  function unlock(code) {
+    try { localStorage.setItem(STORE_KEY, code) } catch { /* private mode */ }
+    setFreshEntry(true)
+    setUnlocked(true)
+  }
+
+  if (!unlocked) return <AccessGate onUnlock={unlock} />
+
+  return <InvitationPage startWithCurtain={freshEntry} />
+}
+
+function InvitationPage({ startWithCurtain }) {
+  // One reveal scan covers everything; this page mounts after the gate opens.
   useReveal()
+
+  // The entry curtain owns the first seconds: it blocks the hero, then parts
+  // while the default song starts. Stored unlocks skip it entirely.
+  const [entry, setEntry] = useState(startWithCurtain)
 
   const [songIdx, setSongIdx] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [needTap, setNeedTap] = useState(false)
   const audioRef = useRef(null)
 
-  const audioUrl = useMemo(() => (SONGS[songIdx] ? FALLBACK_AUDIO[SONGS[songIdx].id] : ''), [songIdx])
+  // Couple-supplied files in public/music/, served from /music/<file>.
+  const audioUrl = useMemo(() => (SONGS[songIdx] ? `${import.meta.env.BASE_URL}music/${SONGS[songIdx].file}` : ''), [songIdx])
 
   useEffect(() => {
     const a = audioRef.current
@@ -102,14 +143,15 @@ export default function App() {
       />
       <BottomNav visible granted />
 
-      <audio ref={audioRef} preload="none" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+      <audio ref={audioRef} preload="auto" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
+
+      {entry && <EntryCurtain onBeginOpening={play} onOpened={() => setEntry(false)} />}
 
       {/* ————— 1 · Opening invitation ————— */}
       <section id="top" className="hero">
         <ParticleField density={70} />
         <div className="hero-vignette" aria-hidden="true" />
-        <GoldFrame className="hero-card" label="Save the Date">
-          <div className="hero-crown"><RingIcon size={26} /></div>
+        <div className="hero-card">
           <p className="hero-kicker">TO A LOVE THAT WILL LAST A LIFETIME</p>
           <Ornament />
           <p className="script hero-script">we invite you to celebrate with us</p>
@@ -125,7 +167,7 @@ export default function App() {
             <span>Scroll to celebrate</span>
             <ChevronDownIcon size={18} />
           </a>
-        </GoldFrame>
+        </div>
       </section>
 
       {/* ————— 2 · Couple introduction ————— */}
@@ -146,9 +188,6 @@ export default function App() {
           <span {...dly(2)}><HomeIcon size={15} /> Sariaya, Quezon</span>
         </div>
       </section>
-
-      {/* ————— 3 · RSVP ————— */}
-      <RsvpSection />
 
       {/* ————— Venues ————— */}
       <section id="venue" className="sec venue-sec">
@@ -192,53 +231,6 @@ export default function App() {
         <p className="footer-hash">{SITE.hashtag}</p>
       </footer>
     </div>
-  )
-}
-
-/* ------------------------------- RSVP section ------------------------------- */
-/* Google Form embedded directly (Section 8). The Form handles fields,
-   validation, submission, and its own confirmation. The site only presents
-   the section and a fallback link. No custom submission logic lives here. */
-
-function RsvpSection() {
-  // Facade: the Form iframe only loads after a tap. Google's frame fetches
-  // font files that 404 in embedded mode; deferring load keeps page boot
-  // clean and saves mobile data. Fallback link always available.
-  const [loaded, setLoaded] = useState(false)
-  return (
-    <section id="rsvp" className="sec rsvp-sec">
-      <SectionHeading icon={MailIcon} kicker={SITE.rsvpDeadline} title="RSVP" light sub="Please answer the form below." />
-      <div className="rsvp-card" data-reveal>
-        {loaded ? (
-          <div className="rsvp-embed">
-            <iframe
-              title="RSVP form"
-              src={RSVP_FORM.embedUrl}
-              width="640"
-              height="1029"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            >
-              Loading…
-            </iframe>
-          </div>
-        ) : (
-          <div className="rsvp-facade">
-            <p className="rsvp-eyebrow"><MailIcon size={15} /> Google Form</p>
-            <p className="rsvp-note">Tap to load the RSVP form right here.</p>
-            <button className="btn btn-gold" onClick={() => setLoaded(true)}>
-              <MailIcon size={16} /> Load RSVP Form
-            </button>
-          </div>
-        )}
-        <div className="rsvp-actions">
-          <a className="btn btn-gold" href={RSVP_FORM.linkUrl} target="_blank" rel="noreferrer">
-            <MailIcon size={16} /> Open RSVP Form
-          </a>
-        </div>
-        <p className="rsvp-foot" data-reveal>Form not loading? Use the button above to open it in a new tab.</p>
-      </div>
-    </section>
   )
 }
 

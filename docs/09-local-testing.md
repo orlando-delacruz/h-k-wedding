@@ -6,24 +6,34 @@ npm run dev
 
 Open **http://localhost:5173**.
 
-## 1. Full page (public, no login anywhere)
+## 1. Access gate → full page
 
-Scroll hero → footer. Every section renders with content: invitation card,
+1. Open **http://localhost:5173** — the access gate is the first view.
+2. “Open the RSVP form” opens the Google Form in a new tab; the Form's
+   confirmation shares the access code (docs/05).
+3. Enter a wrong code: inline error, the invitation stays closed.
+4. Enter the code from `VITE_ACCESS_CODE` (`.env`, see `.env.example`): the
+   invitation mounts and stays unlocked across refreshes and return visits
+   (`localStorage` key `hk_access`). Changing the configured code locks every
+   guest out again.
+
+Then scroll hero → footer. Every section renders with content: invitation card,
 portrait, RSVP form, venues, countdown + calendar, announcement + gramophone,
 story, entourage, details, slideshow, footer.
 
-## 2. RSVP embed
+## 2. RSVP form
 
-1. Go to **http://localhost:5173/#rsvp**
-2. The Google Form loads inside the page.
-3. “Open RSVP Form” opens the same form in a new tab.
-4. Submit a test response from the live Form and confirm it lands in the
-   owner's Responses tab (needs Form access — otherwise check loading only).
+1. On the gate, “Open the RSVP form” opens the Google Form in a new tab.
+2. There is no in-page RSVP section: the form is only offered from the gate.
+3. Submit a test response from the live Form and confirm it lands in the
+   owner's Responses tab (needs Form access — otherwise check the link only).
 
-## 3. Curtain + music
+## 3. Entry curtain + music
 
-Tap “Pull the curtain”: 3 s hold, opens center → sides, portrait + names appear.
-Tap the vinyl: song plays or the tap-to-play fallback shows.
+Enter the code: full-screen velvet drapes hold ~1.4 s, then part slowly while
+Pahintulot (the default song, from `public/music/`) starts. “Tap to unveil”
+skips the hold. The gramophone lists exactly 2 tracks; switching plays the
+other local file, or the tap-to-play fallback shows if the browser refused.
 
 ## 4. Automated suites
 
@@ -34,6 +44,12 @@ npm run build
 ```
 
 ## Troubleshooting
+
+### The access code is refused
+
+The code comes from `VITE_ACCESS_CODE` (`.env` locally, Vercel for production)
+and is compared case-insensitively. If the couple changed the code, the Form's
+confirmation text must be updated to match (docs/05).
 
 ### Form shows a Google sign-in wall
 

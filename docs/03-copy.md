@@ -35,7 +35,7 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
 - “Khatrina”
 - “November 30, 2026 · 6:30 AM”
 - Music label: “Songs of love”
-- Songs: Pahintulot, Paninindigan Kita, Feeling Good.
+- Songs: Pahintulot, Paninindigan Kita.
 
 ## Venues
 

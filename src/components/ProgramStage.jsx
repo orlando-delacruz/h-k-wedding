@@ -12,7 +12,7 @@ const REDUCED = typeof window !== 'undefined' && window.matchMedia?.('(prefers-r
  * and the outline of the day. All content is public. Every field is read
  * defensively — a missing asset must never blank the page.
  */
-export default function ProgramStage({ program, autoOpen, songIdx, playing, needTap, onToggle, onSelectSong, onPlayPressed }) {
+export default function ProgramStage({ program, songIdx, playing, needTap, onToggle, onSelectSong, onPlayPressed }) {
   const [opened, setOpened] = useState(false)
   const wrapRef = useRef(null)
   const portraitRef = useRef(null)
@@ -53,11 +53,9 @@ export default function ProgramStage({ program, autoOpen, songIdx, playing, need
   }
 
   useEffect(() => {
-    if (!autoOpen || opened) return
-    const t = setTimeout(openCurtain, 300)
-    return () => clearTimeout(t)
+    if (!opened) return
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoOpen])
+  }, [])
 
   const venues = Array.isArray(program?.venues) ? program.venues : []
   const stages = Array.isArray(program?.stages) ? program.stages : []

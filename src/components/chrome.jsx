@@ -9,7 +9,6 @@ function navItems() {
   return [
     { id: 'top', label: 'Invite', Icon: HomeIcon },
     { id: 'portrait', label: 'Couple', Icon: ChurchIcon },
-    { id: 'rsvp', label: 'RSVP', Icon: MailIcon },
     { id: 'venue', label: 'Venue', Icon: ChurchIcon },
     { id: 'countdown', label: 'Countdown', Icon: ClockIcon },
     { id: 'music', label: 'Music', Icon: MusicIcon },
@@ -39,13 +38,16 @@ export function BottomNav({ visible }) {
 export function MusicBar({ visible, song, playing, onToggle, onOpenPlayer }) {
   return (
     <div className={`music-bar ${visible ? 'show' : ''} ${playing ? 'is-playing' : ''}`}>
-      <button className="music-disc" onClick={onToggle} aria-label={playing ? 'Pause music' : 'Play music'}>
-        <span className="disc-rings" />
-        {playing ? <PauseIcon size={15} /> : <PlayIcon size={15} />}
+      <button className="mb-deck" onClick={onToggle} aria-label={playing ? 'Pause music' : 'Play music'}>
+        <span className="mb-disc">
+          <span className="mb-grooves" />
+          <span className="mb-label">{playing ? <PauseIcon size={12} /> : <PlayIcon size={12} />}</span>
+        </span>
+        <span className="mb-arm" aria-hidden="true"><i /><b /></span>
       </button>
-      <button className="music-meta" onClick={onOpenPlayer}>
+      <button className="mb-meta" onClick={onOpenPlayer} aria-label={`Open music player: ${song}`}>
         <span className="eq" aria-hidden="true"><i /><i /><i /><i /></span>
-        <span className="music-title"><MusicIcon size={13} /> {song}</span>
+        <span className="mb-title"><MusicIcon size={13} /> {song}</span>
       </button>
     </div>
   )

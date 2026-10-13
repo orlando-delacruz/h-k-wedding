@@ -18,7 +18,6 @@ export const PROGRAM = {
       address: 'Girasoles Farm, Candelaria, Quezon, Philippines',
       mapLink: 'https://www.google.com/maps?q=Girasoles+Farm+Candelaria+Quezon+Philippines',
       mapEmbed: 'https://www.google.com/maps?q=Girasoles+Farm+Candelaria+Quezon+Philippines&output=embed',
-      placeholder: true,
     },
     {
       id: 'reception',
@@ -27,7 +26,6 @@ export const PROGRAM = {
       address: "Bride's Residence, Sitio Bibingkahan, Concepcion Uno, Sariaya, Quezon, Philippines",
       mapLink: 'https://www.google.com/maps?q=Sitio+Bibingkahan+Concepcion+Uno+Sariaya+Quezon+Philippines',
       mapEmbed: 'https://www.google.com/maps?q=Sitio+Bibingkahan+Concepcion+Uno+Sariaya+Quezon+Philippines&output=embed',
-      placeholder: true,
     },
   ],
 
@@ -55,7 +53,6 @@ export const PROGRAM = {
       'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1200&auto=format&fit=crop',
     ],
     attireGuide: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1200&auto=format&fit=crop',
-    attireGuidePlaceholder: true,
   },
 
   hashtag: '#NaKHATitiyakNaKayHARTH',

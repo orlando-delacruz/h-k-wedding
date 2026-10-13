@@ -1,6 +1,7 @@
 /**
  * Verifies the master luxury-invitation spec against the live sources.
- * All content is public; there is no backend, no gate, no custom RSVP.
+ * All content is public; there is no backend, no admin and no custom RSVP.
+ * The access gate is a courtesy screen, not access control.
  * Usage: node scripts/verify-spec.mjs
  */
 import fs from 'fs'
@@ -12,6 +13,8 @@ const exists = (...p) => fs.existsSync(path.join(root, ...p))
 
 const app = read('src', 'App.jsx')
 const stage = read('src', 'components', 'ProgramStage.jsx')
+const gate = read('src', 'components', 'AccessGate.jsx')
+const entry = read('src', 'components', 'EntryCurtain.jsx')
 const site = read('src', 'config', 'site.js')
 const ent = read('src', 'config', 'entourage.js')
 const program = read('src', 'config', 'program.js')
@@ -39,15 +42,29 @@ const checks = [
   ['names reveal', stage, 'Khatrina'],
   ['reveal date', stage, 'November 30, 2026 · 6:30 AM'],
 
-  /* ---- RSVP embed (Section 8) ---- */
-  ['rsvp heading', app, 'title="RSVP"'],
-  ['deadline', site, 'PLEASE RESPOND BY NOVEMBER 15, 2026'],
+  /* ---- RSVP (Section 8): one Google Form, offered from the gate ---- */
+  ['deadline on the gate', gate, 'SITE.rsvpDeadline'],
+  ['deadline exact', site, 'PLEASE RESPOND BY NOVEMBER 15, 2026'],
   ['form link', site, 'https://forms.gle/Nq1jWqWfMTg4eYa98'],
-  ['form embed url', site, 'docs.google.com/forms/d/e/1FAIpQLSd1kdBdnjrrrHBmfB_AJOQYCWqsZAZBW0TLLK-5HkbnuHMYfA/viewform?embedded=true'],
-  ['form iframe', app, '<iframe'],
-  ['form iframe src', app, 'RSVP_FORM.embedUrl'],
-  ['fallback link', app, 'Open RSVP Form'],
-  ['fallback new tab', app, 'target="_blank"'],
+  ['no rsvp section in the invitation', app, '___absent:id="rsvp"___'],
+  ['no embedded form frame', app + gate, '___absent:docs.google.com___'],
+  ['no custom submission code', app + gate, '___absent:fetch(___'],
+
+  /* ---- access gate (Section 8a): courtesy screen, never claimed as protection --- */
+  ['gate is the first view', app, 'if (!unlocked) return <AccessGate'],
+  ['gate component exists', gate, 'ACCESS.code'],
+  ['gate sends guests to the form', gate, 'RSVP_FORM.linkUrl'],
+  ['gate form opens a new tab', gate, 'target="_blank"'],
+  ['gate code lives in config', site, 'code:'],
+  ['gate code comes from the environment', site, 'import.meta.env.VITE_ACCESS_CODE'],
+  ['gate code is documented', read('.env.example'), 'VITE_ACCESS_CODE'],
+  ['gate names use the script font', styles, '.gate-names'],
+  ['gate light-sweep on the gold frame', styles, 'gate-card'],
+  ['gate remembers the unlock', app, 'localStorage.setItem(STORE_KEY'],
+  ['stored code is re-checked on load', app, 'saved.toUpperCase() === ACCESS.code.toUpperCase()'],
+  ['gate keeps no session storage', gate + app, '___absent:sessionStorage___'],
+  ['gate claims no privacy', gate, '___absent:private___'],
+  ['gate claims no security', gate, '___absent:secure___'],
 
   /* ---- venues (Section 11) ---- */
   ['ceremony title', program, 'Wedding Ceremony Venue'],
@@ -111,11 +128,23 @@ const checks = [
   ['hashtag exact', program, '#NaKHATitiyakNaKayHARTH'],
   ['hashtag signature styling', styles, '.hashtag'],
 
-  /* ---- music (Section 10) ---- */
+  /* ---- music: the couple's 2 local tracks (Section 10) ---- */
   ['default track', site, 'Pahintulot'],
   ['track 2', site, 'Paninindigan kita'],
-  ['track 3', site, 'Feeling good'],
+  ['only two tracks', site, '___absent:feeling-good___'],
+  ['no demo streams', site + app + stage, '___absent:soundhelix___'],
+  ['no fallback audio map', site, '___absent:FALLBACK_AUDIO___'],
+  ['player serves local files', app, 'music/${SONGS[songIdx].file}'],
   ['gramophone', stage, 'gramo-card'],
+
+  /* ---- entry curtain: post-code velvet reveal (Section 10b) ---- */
+  ['entry curtain mounts on fresh unlock', app, 'startWithCurtain'],
+  ['entry curtain component exists', entry, 'entry-panel'],
+  ['music starts with the opening', app, 'onBeginOpening={play}'],
+  ['entry overlay styles', styles, '.entry-curtain'],
+  ['entry panels styled', styles, '.entry-panel'],
+  ['reduced-motion skips the entry curtain', entry, 'REDUCED'],
+  ['curtain only arms on code entry', app, 'setFreshEntry(true)'],
 
   /* ---- approved fonts only (Section 4) ---- */
   ['pinyon script loaded', html, 'Pinyon+Script'],
@@ -150,6 +179,9 @@ const absentFiles = [
   ['no intro component', 'src/components/Intro.jsx'],
   ['no frontend api helper', 'src/api.js'],
   ['no admin component', 'src/components/Admin.jsx'],
+  ['no supabase client', 'src/lib/supabase.js'],
+  ['no rsvp api layer', 'src/lib/rsvpApi.js'],
+  ['no supabase project dir', 'supabase'],
 ]
 
 let fails = []

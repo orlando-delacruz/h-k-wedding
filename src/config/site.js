@@ -1,8 +1,7 @@
 // Client-side configuration for the PUBLIC invitation site.
-// All content is public: there is no access gate and no backend.
+// All content is public; the access gate is a courtesy screen, not access control.
 
 export const SITE = {
-  couple: { groom: 'Harthwel', bride: 'Khatrina' },
   dateISO: '2026-11-30T06:30:00+08:00',
   dateLabel: 'November 30, 2026',
   timeLabel: '6:30 AM',
@@ -26,21 +25,12 @@ export const PUBLIC_VENUES = [
   },
 ]
 
-// Song catalogue. Real files go in public/audio/ (committed site assets);
-// until then the gramophone streams clearly marked demo audio.
+// Song catalogue. The couple's files live in public/music/ and ship with the
+// site; the player streams them from /music/<file>. Only these 2 tracks exist.
 export const SONGS = [
   { id: 'pahintulot', title: 'Pahintulot', file: 'pahintulot.mp3', isDefault: true },
   { id: 'paninindigan', title: 'Paninindigan kita', file: 'paninindigan-kita.mp3' },
-  { id: 'feeling-good', title: 'Feeling good', file: 'feeling-good.mp3' },
 ]
-
-// Temporary demonstration streams so the gramophone works before the couple
-// supplies real recordings. Replace by placing files in public/audio/ instead.
-export const FALLBACK_AUDIO = {
-  pahintulot: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
-  paninindigan: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
-  'feeling-good': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
-}
 
 const un = (id) => `https://images.unsplash.com/${id}?q=80&w=1200&auto=format&fit=crop`
 
@@ -50,7 +40,29 @@ export const PHOTOS = {
   heroPortrait: un('photo-1519741497674-611481863552'),
 }
 
+// RSVP — the Google Form owns fields, validation, submission and every response
+// (docs/05). The site never rebuilds the form, never stores a response, and
+// never reads one back.
 export const RSVP_FORM = {
   linkUrl: 'https://forms.gle/Nq1jWqWfMTg4eYa98',
-  embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd1kdBdnjrrrHBmfB_AJOQYCWqsZAZBW0TLLK-5HkbnuHMYfA/viewform?embedded=true',
+}
+
+// Courtesy gate: guests answer the Form, the confirmation shares the code, and
+// the code opens the full invitation. The code is NOT a secret — it ships to the
+// browser with the page, so it keeps polite guests out, not determined ones.
+// Set the real code in `VITE_ACCESS_CODE` (.env locally, Vercel for production);
+// the fallback below keeps the site usable when the variable is missing.
+// TEMPORARY wording: the couple confirms the final sentences (docs/07).
+const FALLBACK_ACCESS_CODE = 'HARTHWEL2026'
+
+export const ACCESS = {
+  code: (import.meta.env.VITE_ACCESS_CODE || '').trim() || FALLBACK_ACCESS_CODE,
+  kicker: 'Kindly respond first',
+  sub: 'Our RSVP form shares the access code that opens the full invitation.',
+  formButton: 'Open the RSVP form',
+  formNote: 'Answer it first, then come back here with your code.',
+  codeLabel: 'Access code',
+  codeHint: 'Shared with your RSVP confirmation. Not case-sensitive.',
+  codeButton: 'Open our invitation',
+  codeError: 'That code does not match. Please check it and try again.',
 }

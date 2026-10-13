@@ -19,11 +19,18 @@ All placeholders allowed until real assets arrive. Keep paths stable so swap is 
 
 - [x] Embed + short URL configured in `src/config/site.js` `RSVP_FORM`
 - [ ] Form set to public: no sign-in required, responses collected, notifications on
+- [ ] **Access code** — set `VITE_ACCESS_CODE` (`.env` locally, Vercel for
+      production, see `.env.example`) and put the same code in the Form's
+      confirmation text (docs/05). The fallback in `src/config/site.js` is a
+      placeholder. Gate wording in `ACCESS` is temporary too: the couple confirms
+      the final sentences.
 
-## 4. Audio (3 files, owner supplies)
+## 4. Audio (couple-supplied, ships with the site)
 
-- [ ] `pahintulot.mp3` (default), `paninindigan-kita.mp3`, `feeling-good.mp3`
-- Check licensing, normalize volume, <5MB each if possible.
+- [x] `pahintulot.mp3` (default), `paninindigan-kita.mp3` in `public/music/`
+- Only these 2 tracks: the gramophone lists exactly `SONGS` from
+  `src/config/site.js`. Adding a track means adding the file + one entry.
+- Confirm licensing for both recordings; keep each file <8MB if possible.
 
 ## 5. Couple photos + story
 

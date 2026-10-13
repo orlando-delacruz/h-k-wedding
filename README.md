@@ -4,8 +4,11 @@
 > Reception: Bride's Residence, Sitio Bibingkahan, Concepcion Uno, Sariaya, Quezon
 
 Mobile-first static invitation site: velvet midnight blue, metallic Antique Gold
-with animated light reflection, Pinyon Script names, and an embedded Google Form
-for RSVP. No backend, no database, no admin — the Form owns all responses.
+with animated light reflection, Pinyon Script names, and a Google Form for RSVP
+(opened from the gate). No backend, no database, no admin — the Form owns all
+responses. An access gate sits in front of the invitation: the Form's
+confirmation shares the code, and the code opens the page (a courtesy screen, not
+access control).
 
 ## Identity
 
@@ -20,15 +23,21 @@ for RSVP. No backend, no database, no admin — the Form owns all responses.
 - **Frontend only:** React 18 + Vite static build (`dist/`). No server, no API routes.
 - **Fonts:** Pinyon Script + Cormorant Garamond via Google Fonts. Body uses
   Cormorant Garamond until licensed Calluna files arrive (see `docs/07-assets-todo.md`).
-- **Animation:** anime.js choreography (curtain), CSS ambient motion + gold
-  light-sweep. Respects `prefers-reduced-motion`.
-- **RSVP:** embedded Google Form (`RSVP_FORM` in `src/config/site.js`) plus a
-  new-tab fallback button. No custom submission code anywhere.
+- **Animation:** anime.js choreography (entry curtain, music curtain), CSS ambient
+  motion + gold light-sweep. Respects `prefers-reduced-motion`.
+- **RSVP:** one Google Form (`RSVP_FORM.linkUrl` in `src/config/site.js`), opened
+  from the gate in a new tab. No in-page section, no custom submission code.
+- **Access gate:** `AccessGate.jsx` + `ACCESS` in `src/config/site.js`. The code
+  comes from `VITE_ACCESS_CODE` (see `.env.example`) and is public in the bundle
+  by design. A successful code is remembered in `localStorage` (`hk_access`) and
+  re-checked on every load, so refreshes stay inside while a rotated code locks
+  everyone out again.
 
 ## Quick start
 
 ```bash
 npm install
+cp .env.example .env   # then set VITE_ACCESS_CODE (the code guests receive)
 npm run dev    # Vite only, http://localhost:5173
 ```
 
@@ -56,7 +65,7 @@ All exit non-zero on failure.
 - `docs/02-sections.md` — page structure
 - `docs/03-copy.md` — locked invitation copy
 - `docs/04-entourage.md` — locked entourage list
-- `docs/05-rsvp-admin-excel.md` — RSVP via Google Form (legacy filename kept)
+- `docs/05-rsvp-google-form.md` — RSVP via Google Form + the access gate
 - `docs/06-music-animation.md` — songs, gramophone, curtain
 - `docs/07-assets-todo.md` — assets the couple still needs to supply
 - `docs/08-deployment.md` — static hosting notes
@@ -65,12 +74,12 @@ All exit non-zero on failure.
 
 ```
 src/
-  App.jsx                    page sections, no gate
-  config/site.js             public facts, song catalogue, form URLs
+  App.jsx                    gate state + page sections, no admin
+  config/site.js             public facts, song catalogue, form URLs, access code
   config/program.js          public programme (venues, story, photos)
   config/entourage.js        locked entourage data
   components/                Icons, Floral, effects, ui, chrome,
-                             ProgramStage, ErrorBoundary
+                             AccessGate, EntryCurtain, ProgramStage, ErrorBoundary
 scripts/
   qa-browser.mjs             end-to-end suite (real Chrome)
   verify-spec.mjs            spec string checks

@@ -23,11 +23,19 @@ any older doc where they disagree.
   API, NO database, NO workbook, and NO admin area. `vercel.json` serves static
   files only. Never reintroduce a submission endpoint, guest sessions, an admin
   login/dashboard, or any response storage. Google Forms owns RSVP collection.
-- RSVP is one embedded Google Form (`RSVP_FORM` in `src/config/site.js`) plus a
-  new-tab fallback link. Never rebuild its fields in HTML, never fake a
+- RSVP is one Google Form (`RSVP_FORM.linkUrl` in `src/config/site.js`), offered
+  from the access gate and opened in a new tab. It is never embedded in the
+  invitation page. Never rebuild its fields in HTML, never fake a
   submission confirmation, never scrape or embed response data.
 - All page content is public. Never claim anything shipped to the browser is
   private or access-controlled.
+- The access gate (`src/components/AccessGate.jsx`, code from `VITE_ACCESS_CODE`
+  with a fallback in `ACCESS`) is a courtesy screen: guests answer the Form, the
+  confirmation shares the code, and the code opens the invitation. It is NOT
+  access control — the code ships in the bundle — so never describe it as
+  private, secure or protected. A successful code is remembered in
+  `localStorage` (`hk_access`) and re-checked against the configured code on every
+  load, so rotating the code locks everyone out again.
 - Do not add a UI framework or icon package without a clear need; icons and effects
   are hand-rolled in `src/components/`.
 - Approved fonts only: Pinyon Script (romantic names), Cormorant Garamond
@@ -45,7 +53,9 @@ any older doc where they disagree.
 ## 3. Security/privacy rules (do not weaken)
 
 - No secrets exist: no `VITE_`-prefixed secret, no password, no session, no token
-  anywhere. Never add one without explicit owner approval.
+  anywhere. Never add one without explicit owner approval. The only `VITE_`
+  variable is `VITE_ACCESS_CODE`, which is public by design (Vite inlines it into
+  the bundle): a courtesy code, not a secret.
 - Never bundle, expose, or link private Google Forms response data, spreadsheets,
   or account credentials.
 - Never invent or hardcode map URLs, form IDs, or query parameters. Owner-supplied
