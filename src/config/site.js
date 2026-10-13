@@ -1,6 +1,5 @@
-// Client-side configuration for the PUBLIC invitation.
-// Anything that belongs to the protected programme lives on the server and is
-// fetched only after the server confirms an attending session.
+// Client-side configuration for the PUBLIC invitation site.
+// All content is public: there is no access gate and no backend.
 
 export const SITE = {
   couple: { groom: 'Harthwel', bride: 'Khatrina' },
@@ -27,8 +26,8 @@ export const PUBLIC_VENUES = [
   },
 ]
 
-// Song catalogue. Real files live in the server's private audio directory and are
-// streamed through the authorized audio endpoint once supplied.
+// Song catalogue. Real files go in public/audio/ (committed site assets);
+// until then the gramophone streams clearly marked demo audio.
 export const SONGS = [
   { id: 'pahintulot', title: 'Pahintulot', file: 'pahintulot.mp3', isDefault: true },
   { id: 'paninindigan', title: 'Paninindigan kita', file: 'paninindigan-kita.mp3' },
@@ -36,7 +35,7 @@ export const SONGS = [
 ]
 
 // Temporary demonstration streams so the gramophone works before the couple
-// supplies real recordings. Replace by placing files in data/audio/ instead.
+// supplies real recordings. Replace by placing files in public/audio/ instead.
 export const FALLBACK_AUDIO = {
   pahintulot: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
   paninindigan: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
@@ -51,4 +50,7 @@ export const PHOTOS = {
   heroPortrait: un('photo-1519741497674-611481863552'),
 }
 
-export const RSVP_LIMITS = { name: 100, companion: 100, message: 500 }
+export const RSVP_FORM = {
+  linkUrl: 'https://forms.gle/Nq1jWqWfMTg4eYa98',
+  embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd1kdBdnjrrrHBmfB_AJOQYCWqsZAZBW0TLLK-5HkbnuHMYfA/viewform?embedded=true',
+}

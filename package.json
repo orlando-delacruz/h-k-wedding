@@ -1,29 +1,20 @@
 {
   "name": "hk-wedding",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev.mjs",
-    "dev:all": "node scripts/dev.mjs",
-    "dev:web": "node ./node_modules/vite/bin/vite.js",
-    "server": "node server/index.js",
+    "dev": "node ./node_modules/vite/bin/vite.js",
     "build": "node ./node_modules/vite/bin/vite.js build",
     "preview": "node ./node_modules/vite/bin/vite.js preview",
-    "verify": "node scripts/verify-spec.mjs && node scripts/qa.mjs && node --import ./scripts/mocks/blob-loader.mjs scripts/qa-blob.mjs",
+    "verify": "node scripts/verify-spec.mjs",
     "test:ui": "node scripts/qa-browser.mjs"
   },
   "dependencies": {
-    "@vercel/blob": "^2.8.1",
     "animejs": "^3.2.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "exceljs": "^4.4.0",
-    "express": "^4.19.2",
     "playwright-core": "^1.64.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "xlsx": "^0.18.5"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",

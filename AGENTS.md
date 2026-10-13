@@ -1,6 +1,8 @@
 # AGENTS.md — Rules for AI Agents and Contributors
 
-This file governs all changes in `h&k-wedding`.
+This file governs all changes in `h&k-wedding`. The master luxury-invitation
+spec (Pinyon Script, Antique Gold, embedded Google Form, no backend) wins over
+any older doc where they disagree.
 
 ## 1. Content immutability
 
@@ -11,54 +13,55 @@ This file governs all changes in `h&k-wedding`.
 - Locked facts: `November 30, 2026 · 6:30 AM Asia/Manila`, `Girasoles Farm, Candelaria`,
   `Bride's Residence, Sitio Bibingkahan, Concepcion Uno, Sariaya, Quezon`,
   `#NaKHATitiyakNaKayHARTH`.
-- Never invent couple history, photographs, coordinates, or schedule details. The
-  timeline beyond the 6:30 AM ceremony is unknown until the couple supplies it.
+- Never invent couple history, photographs, coordinates, map links, or schedule
+  details. The timeline beyond the 6:30 AM ceremony is unknown until the couple
+  supplies it. Map links, story text, and photos stay placeholders until supplied.
 
 ## 2. Architecture constraints
 
-- Frontend: React + Vite, mobile-first. Do not add a UI framework or icon package
-  without a clear need; icons and effects are hand-rolled in `src/components/`.
+- Frontend only: React + Vite static site, mobile-first. There is NO backend, NO
+  API, NO database, NO workbook, and NO admin area. `vercel.json` serves static
+  files only. Never reintroduce a submission endpoint, guest sessions, an admin
+  login/dashboard, or any response storage. Google Forms owns RSVP collection.
+- RSVP is one embedded Google Form (`RSVP_FORM` in `src/config/site.js`) plus a
+  new-tab fallback link. Never rebuild its fields in HTML, never fake a
+  submission confirmation, never scrape or embed response data.
+- All page content is public. Never claim anything shipped to the browser is
+  private or access-controlled.
+- Do not add a UI framework or icon package without a clear need; icons and effects
+  are hand-rolled in `src/components/`.
+- Approved fonts only: Pinyon Script (romantic names), Cormorant Garamond
+  (editorial/headings/body until Calluna files arrive). NEVER use Montserrat,
+  Foglighten, or Foglihten No07. NEVER silently substitute another family: if a
+  licensed file (Calluna) is unavailable, stop and ask.
+- Palette anchors: Velvet Midnight Blue `#101D36`, Velvet Navy `#192A46`,
+  Antique Gold `#8D6710`, highlight `#F5D76E`. Gold must stay metallic and
+  dimensional — never flat yellow. The slow light-sweep on gold borders, frames,
+  and dividers is mandatory and must survive every restyle.
 - Animation: anime.js for choreography, CSS for ambient motion. Respect
-  `prefers-reduced-motion`. Do not add animation that gates content.
-- RSVP storage: one Excel workbook via ExcelJS, behind `server/storage.js`
-  (Vercel Blob on Vercel, local disk elsewhere). No database service, no ORM.
-  Never place the workbook in a served directory, never import it into the frontend,
-  and never add a download endpoint for it.
-- All workbook access goes through `server/workbook.js`. Never read or write the
-  workbook from another module; the lock, conditional-write, and validation rules
-  live there.
+  `prefers-reduced-motion`. Do not add animation that gates content. No envelope,
+  no wax seal — the hero invitation card is the opening screen.
 
-## 3. Security rules (do not weaken)
+## 3. Security/privacy rules (do not weaken)
 
-- Admin auth is intentionally simple: `ADMIN_EMAIL` + `ADMIN_PASSWORD` from server-side
-  `.env`, compared in constant time. Do not reintroduce hashing layers or add
-  self-service password reset. Never use a `VITE_`-prefixed secret, never return a
-  password, never log it.
-- Sessions are HMAC-signed HttpOnly cookies. Do not introduce localStorage as an
-  authorization signal.
-- Protected programme content belongs in `server/program.js` and is served only from
-  `GET /api/program` behind `requireAttendingGuest`. Do not bundle it into `src/`.
-- Declines must never receive a grant; a decline from a granted session must clear it.
-- Admin endpoints require `requireAdmin`. Invalid status values are rejected.
-- Keep the origin guard, rate limits, and constant-time credential compare intact.
-- Corrupt workbooks are reported and backed up, never silently replaced.
-
-## 4. Asset rules
-
+- No secrets exist: no `VITE_`-prefixed secret, no password, no session, no token
+  anywhere. Never add one without explicit owner approval.
+- Never bundle, expose, or link private Google Forms response data, spreadsheets,
+  or account credentials.
+- Never invent or hardcode map URLs, form IDs, or query parameters. Owner-supplied
+  URLs live centralized in `src/config/` only.
 - Placeholder imagery stays clearly labelled in the UI and centralized in
-  `src/config/site.js` (public) or `server/program.js` (protected).
-- Never present stock photography as an actual photo of the couple.
+  `src/config/`. Never present stock photography as an actual photo of the couple.
 - Swap assets by path only; do not scatter new URLs through components.
-- Audio files go to `data/audio/` and are streamed through the authorized endpoint.
 
-## 5. Workflow
+## 4. Workflow
 
 - Docs are the source of truth; update them before changing behaviour.
 - Before declaring work complete, run:
-  - `node scripts/verify-spec.mjs` (copy, tokens, security wiring)
-  - `node scripts/qa.mjs` (end-to-end RSVP, access control, workbook safety)
-  - `node --import ./scripts/mocks/blob-loader.mjs scripts/qa-blob.mjs` (Blob driver)
+  - `node scripts/verify-spec.mjs` (copy, tokens, fonts, no-backend wiring)
+  - `npm run test:ui` (end-to-end in real Chrome at 360px + 390px, needs `npm run dev`)
   - `npm run build`
-- Never commit `.env`, workbooks, backups, or audio files — `.gitignore` covers them,
-  keep it that way.
-- Report test results honestly, including failures and untested areas.
+- Never commit workbooks, backups, audio files, or credentials — keep `.gitignore`
+  that way.
+- Report test results honestly, including failures and untested areas. Never claim
+  the Form integration is verified without loading the real owner-provided Form URL.

@@ -2,83 +2,70 @@
 
 ## Identity
 
-Mobile-first, responsive, elegant and cinematic. Velvet midnight/navy with metallic
-gold, white typography, and refined floral decoration. Every animation degrades
-gracefully, and no animation is required to read the content.
+Mobile-first luxury invitation. Velvet midnight/navy with metallic Antique Gold,
+Pinyon Script names, white/ivory typography, floral decoration. No animation is
+required to read any content.
 
 ## Colors
 
 | Token | Value | Use |
 |---|---|---|
-| Velvet Midnight Blue | `#10182B` | page background, curtain, footer |
-| Velvet Navy Blue | `#172746` | cards, story, venue section |
-| White | `#FFFFFF` | primary typography, RSVP and details sections |
-| Champagne Gold | `#D6B46A` | borders, frames, mid-gradient stop |
-| Deep Gold | `#A77A30` | gradient anchors, accents |
-| Soft Gold Highlight | `#F4DF9A` | shine peak, calendar day, focus ring |
-| Light Neutral | `#FAF9F6` | RSVP/details paper background |
+| Velvet Midnight Blue | `#101D36` | page background, footer |
+| Velvet Navy Blue | `#192A46` | cards, story, venue sections |
+| Antique Gold | `#8D6710` | metallic depth, gradient anchor |
+| Reflective Gold Highlight | `#F5D76E` | shine peak, focus ring |
+| White | `#FFFFFF` | primary typography |
 
-Generated values are declared once in `src/styles.css` as `--gold-1 … --gold-5` and
-`--grad-gold`, a multi-stop gradient animated with a moving highlight. A flat yellow
-border is explicitly avoided.
+Declared as `--gold-1 … --gold-5` plus `--grad-gold` in `src/styles.css`.
+Flat yellow borders are explicitly avoided.
 
 ## Metallic gold treatment
 
-- `--grad-gold` layered champagne/bronze/gold gradient, used on borders, buttons,
-  dividers, and the calendar highlight.
+- `--grad-gold` layered antique/bronze/highlight gradient on borders, buttons,
+  dividers, calendar highlight.
 - `.shiny-text` sweeps a 220%-wide gradient across text (`@keyframes shine`).
-- `.gold-frame` uses a padding-box/border-box gradient border with inner hairline and
-  corner brackets; `.fc` corner ornaments are drawn with gradient pseudo-elements.
-- Specular highlights: `.tilt-glare` follows the pointer; `.mirror-shine` sweeps the
-  venue mirror glass every 6.5 s.
-- All of the above stop under `prefers-reduced-motion: reduce` (see below).
+- `.gold-frame` padding-box/border-box gradient border with corner brackets.
+- `.mirror-shine` sweeps venue mirrors every 6.5 s; `.tilt-glare` follows pointer.
+- All stop under `prefers-reduced-motion: reduce`.
 
-## Typography
+## Typography (approved only)
 
-- **Cormorant Garamond** — couple names, elegant headings (`--font-serif`).
-- **Montserrat** — body copy, labels, buttons, interface text (`--font-body`).
-- **Allura** — limited decorative script; Great Vibes is the loaded alternative
-  (`--font-script`).
-- Playfair Display is used for the display tier (section titles, hero).
+- **Pinyon Script** — couple names, romantic displays (`--font-script`).
+- **Cormorant Garamond Bold Italic** — section titles, entourage headings,
+  RSVP, details headings.
+- **Cormorant Garamond** — body/editorial until licensed **Calluna** files
+  arrive (see `07-assets-todo.md`). Never Montserrat, Foglighten, Foglihten No07.
 
 ## Motion inventory
 
 | Effect | Where | Implementation |
 |---|---|---|
-| Glitter | hero + global background | `ParticleField` canvas (`effects.jsx`) |
-| Illumination | gramophone vinyl, seal glow, CTA pulse | CSS keyframes (`spin`, `sealGlow`, `ctaPulse`) |
-| Fade / reveal | all sections | `[data-reveal]` + `useReveal` IntersectionObserver |
-| Zoom | portrait tilt, Ken Burns slideshow, card focus | CSS transforms, `@keyframes kenburns` |
-| Dust dissolve | RSVP decline | anime.js blur + fade, runs only after the save confirms |
-| Curtain | programme entry | anime.js panel slide (center out) after a 3 s hold |
-| Film strip | Our Story | CSS `filmScroll` marquee, pauses on hover |
-| Spark burst | accept + curtain open | `burstAt()` DOM gold particles |
-| Gold shine | names, hashtag, borders | CSS gradient animation |
+| Glitter | hero + background | `ParticleField` canvas |
+| Illumination | vinyl, CTA pulse | CSS keyframes |
+| Fade / reveal | all sections | `[data-reveal]` + `useReveal` |
+| Curtain | announcement | anime.js slide after 3 s hold, tap to open |
+| Film strip | Our Story | CSS marquee, pauses on hover |
+| Shine | names, hashtag, borders | CSS gradient animation |
 
-Choreography uses anime.js; ambient and hover motion uses CSS. Particles are capped and
-paused when off-screen; timers and observers are cleaned up on unmount.
+`useReveal()` runs once: all content mounts together, so one scan covers it.
 
 ## Accessibility and responsive rules
 
-- `:focus-visible` rings in `--gold-4` on every interactive element; forms are fully
-  keyboard operable (`Enter` advances the RSVP name step).
-- `prefers-reduced-motion: reduce` disables particle canvases, the film marquee, curtain
-  sliding, and reveal transitions; the curtain resolves instantly to the revealed state.
-- Mobile-first layout: a 640 px content column, breakpoints at 560/700/768 px, `svh`
-  sizing, and `env(safe-area-inset-*)` padding for the floating chrome.
-- No horizontal overflow; long entourage names wrap inside their cards.
-- Paired groomsmen/bridesmaids keep their number and stay side by side on mobile.
+- `:focus-visible` rings on interactive elements; full keyboard operability.
+- `prefers-reduced-motion: reduce` disables particles, marquee, curtain slide,
+  reveals; curtain content stays readable.
+- Mobile-first 640 px column, breakpoints 419/560/700/768 px, `svh` sizing,
+  `env(safe-area-inset-*)` chrome padding. No horizontal overflow.
 
 ## Component map
 
 ```
 src/components/
-  Icons.jsx        24 hand-rolled stroke icons (no icon dependency)
-  Floral.jsx       chrysanthemum, lilac, rose, delphinium — floral frame corners
+  Icons.jsx        hand-rolled stroke icons (no icon dependency)
+  Floral.jsx       chrysanthemum, lilac, rose, delphinium corners
   effects.jsx      ParticleField, useReveal, Tilt, CountUp, burstAt, ShinyText
-  ui.jsx           SectionHeading, Divider, GoldFrame, Ornament, Field
-  chrome.jsx       BottomNav (public + programme anchors), MusicBar
-  Intro.jsx        sealed-envelope overlay with wax-seal monogram
+  ui.jsx           SectionHeading, Divider, GoldFrame, Ornament
+  chrome.jsx       BottomNav (all anchors), MusicBar
   ProgramStage.jsx curtain reveal, gramophone, venues, programme outline
-  Admin.jsx        private dashboard (#admin)
+  ErrorBoundary.jsx section-level failure fallback
 ```

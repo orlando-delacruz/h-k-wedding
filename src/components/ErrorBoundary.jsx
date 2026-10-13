@@ -28,8 +28,7 @@ export default class ErrorBoundary extends React.Component {
           <div className="gate-badge" aria-hidden="true">!</div>
           <h3>This part could not be displayed</h3>
           <p>
-            The rest of the invitation still works. Reloading usually fixes it, and your
-            RSVP is already recorded.
+            The rest of the invitation still works. Reloading usually fixes it.
           </p>
           <div className="gate-actions">
             <button className="btn btn-gold" onClick={() => window.location.reload()}>

@@ -22,29 +22,20 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
 
 - Heading: “RSVP”
 - Deadline: “PLEASE RESPOND BY NOVEMBER 15, 2026”
-- Name field: “Enter your name...”
-- Attendance:
-  - “YES I'M GOING TO ATTEND!”
-  - “SORRY, I HAVE SOMETHING TO DO”
-- Additional form:
-  - “Additional Guests”
-  - “You can bring 1 or 2 companions”
-  - “Guest 1:” and “Guest 2”
-  - Both: “full name”
-  - “Leave a message for the couple”
-  - “Express your heartfelt message here...”
-  - “Back” and “Send RSVP”
+- The embedded Google Form owns all field labels, attendance choices, and its
+  confirmation. Intended fields: guest's full name, attendance confirmation,
+  first/second companion full names, message for the couple.
 
-## Curtain + music
+## Announcement + music
 
 - “TWO HEARTS. ONE LOVE. ONE JOURNEY.”
-- “Join us as we say ‘I do.’”
+- “Join us as we say “I do.””
 - “Harthwel”
 - “and”
 - “Khatrina”
 - “November 30, 2026 · 6:30 AM”
 - Music label: “Songs of love”
-- Songs: Pahintulot, Paninindigan kita, Feeling good.
+- Songs: Pahintulot, Paninindigan Kita, Feeling Good.
 
 ## Venues
 
@@ -60,11 +51,15 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
 
 ## Wedding details
 
-ATTIRE GUIDE
+ATTIRE GUIDE:
 
 “We would be honored if you could join us in your best attire. Let's make our special day more memorable in these colors.”
 
-GIFT GUIDE
+WEDDING TIMELINE:
+
+(Timeline image placeholder — only 6:30 AM ceremony is confirmed.)
+
+GIFT GUIDE:
 
 “With all that we have, we've been blessed. Your presence is our greatest gift. Should you wish to contribute further, a gift of cash towards our future together would be deeply appreciated.”
 
@@ -84,4 +79,4 @@ Please help us keep the surprise! We ask that you refrain from posting photos of
 
 ## Final slideshow
 
-- Hashtag in white: #NaKHATitiyakNaKayHARTH (overlay, not covering faces)
+- Decorative signature hashtag: #NaKHATitiyakNaKayHARTH (overlay, not covering faces)

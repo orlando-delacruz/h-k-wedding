@@ -1,16 +1,6 @@
 node_modules/
 dist/
 
-# Private server data: live workbook, backups, guest audio — never committed
-data/*
-!data/.gitkeep
-!data/audio/.gitkeep
-
-# Local environment with admin credentials and session secret
-.env
-.env.local
-.env.*.local
-
 # Editor and OS noise
 .DS_Store
 Thumbs.db

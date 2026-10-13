@@ -1,14 +1,15 @@
-// Protected wedding programme content.
-// Served ONLY to a verified attending session — never bundled into the public page.
-// Keep this file free of credentials, guest records, or personal history that has not
-// been supplied by the couple.
+// Public wedding programme content (Section 7, 11, 14-16).
+// All of this renders openly on the page. Nothing here is access-controlled:
+// anything shipped to the browser is public by definition.
+// Map links, story text, and photos are placeholders until the owner supplies
+// the real assets (see docs/07-assets-todo.md). Never invent replacements.
 
 export const PROGRAM = {
   // Temporary sample — clearly marked; the couple's real story replaces this later.
   story: `Two souls, two paths, one promise. From quiet mornings to loud laughter with friends, every small moment led here. Through distance and doubt, kindness won. Now, before family and God, we choose each other — today, tomorrow, always. (Temporary sample text — the couple's real story will replace this.)`,
 
-  // Public invitation already names the venues; the detailed programme repeats them
-  // with full addresses and map links for confirmed guests.
+  // Public invitation already names the venues; full addresses and map links
+  // live here. Map URLs are provisional until the owner supplies official links.
   venues: [
     {
       id: 'ceremony',

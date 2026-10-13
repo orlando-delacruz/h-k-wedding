@@ -1,23 +1,19 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import anime from 'animejs'
-import { SITE, PUBLIC_VENUES, SONGS, FALLBACK_AUDIO, PHOTOS, RSVP_LIMITS } from './config/site.js'
+import { SITE, PUBLIC_VENUES, SONGS, FALLBACK_AUDIO, PHOTOS, RSVP_FORM } from './config/site.js'
+import { PROGRAM } from './config/program.js'
 import { PRINCIPAL_ROLES, PRINCIPAL_SPONSORS, SECONDARY_PAIRED, OTHER_MEMBERS } from './config/entourage.js'
-import { api } from './api.js'
-import { ParticleField, Tilt, CountUp, useReveal, burstAt, ShinyText } from './components/effects.jsx'
-import { SectionHeading, Divider, GoldFrame, Ornament, Field } from './components/ui.jsx'
+import { ParticleField, Tilt, CountUp, useReveal, ShinyText } from './components/effects.jsx'
+import { SectionHeading, Divider, GoldFrame, Ornament } from './components/ui.jsx'
 import { BottomNav, MusicBar } from './components/chrome.jsx'
-import Intro from './components/Intro.jsx'
-import Admin from './components/Admin.jsx'
 import ProgramStage from './components/ProgramStage.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { FloralCorner } from './components/Floral.jsx'
 import {
   CalendarIcon, MapPinIcon, ChurchIcon, HomeIcon, MusicIcon, HeartIcon, RingIcon, GiftIcon,
   DressIcon, CameraOffIcon, UsersIcon, ClockIcon, MailIcon, ScrollIcon,
-  ChevronDownIcon, FlowerIcon, SparkleIcon, ArrowLeftIcon, CheckIcon,
+  ChevronDownIcon, FlowerIcon, SparkleIcon,
 } from './components/Icons.jsx'
 
-const REDUCED = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 const dly = (i, step = 80) => ({ 'data-reveal': true, style: { transitionDelay: `${i * step}ms` } })
 
 function useCountdown() {
@@ -57,44 +53,13 @@ function Calendar() {
 }
 
 export default function App() {
+  // All content is public and mounts at once; one reveal scan covers everything.
   useReveal()
-  const isAdmin = typeof window !== 'undefined' && window.location.hash.startsWith('#admin')
-
-  const [introOpen, setIntroOpen] = useState(false)
-  const [access, setAccess] = useState({ state: 'checking' }) // checking | public | granted
-  const [program, setProgram] = useState(null)
-  const [justAccepted, setJustAccepted] = useState(false)
 
   const [songIdx, setSongIdx] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [needTap, setNeedTap] = useState(false)
   const audioRef = useRef(null)
-
-  /* Ask the server who this visitor is. The answer — not the UI — decides what renders. */
-  useEffect(() => {
-    let alive = true
-    api.accessState()
-      .then((s) => { if (alive) setAccess({ state: s.granted ? 'granted' : 'public', name: s.name }) })
-      .catch(() => { if (alive) setAccess({ state: 'public' }) })
-    return () => { alive = false }
-  }, [])
-
-  /* Program content only ever arrives after the server authorizes this session.
-     The API wraps the payload as { guest, programme } — unwrap it here so every
-     section receives exactly the shape it expects. */
-  useEffect(() => {
-    if (access.state !== 'granted') return
-    let alive = true
-    api.program()
-      .then((payload) => {
-        if (!alive) return
-        const programme = payload?.programme
-        if (!programme) throw new Error('The server returned no programme content.')
-        setProgram({ ...programme, guest: payload.guest })
-      })
-      .catch(() => { if (alive) setAccess({ state: 'public' }) })
-    return () => { alive = false }
-  }, [access.state])
 
   const audioUrl = useMemo(() => (SONGS[songIdx] ? FALLBACK_AUDIO[SONGS[songIdx].id] : ''), [songIdx])
 
@@ -123,24 +88,19 @@ export default function App() {
     setTimeout(play, 40)
   }
 
-  const isGranted = access.state === 'granted' && !!program
-
-  if (isAdmin) return <Admin />
-
   return (
     <div className="page">
-      {!introOpen && <Intro onOpen={() => setIntroOpen(true)} />}
       <div className="bg-orb orb-a" aria-hidden="true" />
       <div className="bg-orb orb-b" aria-hidden="true" />
       <ParticleField density={26} className="bg-particles" />
       <MusicBar
-        visible={introOpen && isGranted}
+        visible
         song={SONGS[songIdx]?.title}
         playing={playing}
         onToggle={toggle}
         onOpenPlayer={() => document.getElementById('music')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
       />
-      <BottomNav visible={introOpen} granted={isGranted} />
+      <BottomNav visible granted />
 
       <audio ref={audioRef} preload="none" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
 
@@ -188,15 +148,11 @@ export default function App() {
       </section>
 
       {/* ————— 3 · RSVP ————— */}
-      <RsvpSection
-        access={access}
-        onAccepted={() => { setJustAccepted(true); setAccess((a) => ({ ...a, state: 'granted' })) }}
-        onDeclined={() => setAccess({ state: 'public' })}
-      />
+      <RsvpSection />
 
-      {/* ————— Public venue context ————— */}
+      {/* ————— Venues ————— */}
       <section id="venue" className="sec venue-sec">
-        <SectionHeading icon={MapPinIcon} kicker="Two places, one celebration" title="The Venues" sub="Detailed maps unlock with your attending RSVP" />
+        <SectionHeading icon={MapPinIcon} kicker="Two places, one celebration" title="The Venues" sub="Tap a mirror to open in Google Maps" />
         {PUBLIC_VENUES.map((v, i) => (
           <div className="venue-block public-venue" key={v.id} {...dly(i, 140)}>
             <div className="venue-title">
@@ -209,16 +165,13 @@ export default function App() {
         ))}
       </section>
 
-      {/* ————— 7 · Countdown + calendar (public) ————— */}
+      {/* ————— 7 · Countdown + calendar ————— */}
       <CountdownSection />
 
-      {/* ————— 4–6, 8–11 · Protected programme ————— */}
+      {/* ————— Programme: announcement, venues, story, entourage, details, gallery ————— */}
       <ErrorBoundary>
-        <ProtectedProgram
-          access={access}
-          program={program}
-          justAccepted={justAccepted}
-          onJustAcceptedDone={() => setJustAccepted(false)}
+        <ProgramStage
+          program={PROGRAM}
           songIdx={songIdx}
           playing={playing}
           needTap={needTap}
@@ -226,6 +179,10 @@ export default function App() {
           onSelectSong={selectSong}
           onPlayPressed={play}
         />
+        <StorySection program={PROGRAM} />
+        <EntourageSection />
+        <DetailsSection program={PROGRAM} />
+        <GallerySection program={PROGRAM} />
       </ErrorBoundary>
 
       <footer className="footer">
@@ -238,161 +195,49 @@ export default function App() {
   )
 }
 
-/** Turn an API failure into something a guest can actually act on. */
-function describeError(err) {
-  const wait = err?.body?.retryAfterSeconds
-  if (wait) {
-    const mins = Math.max(1, Math.ceil(wait / 60))
-    return `Too many submissions were sent just now. Please wait about ${mins} minute${mins === 1 ? '' : 's'} and press the button again — your details are still here.`
-  }
-  if (err?.status >= 500) {
-    return 'Our server had a problem saving this. Your details are still here — please press the button again.'
-  }
-  return err?.message || 'We could not save your response. Please try again.'
-}
-
 /* ------------------------------- RSVP section ------------------------------- */
+/* Google Form embedded directly (Section 8). The Form handles fields,
+   validation, submission, and its own confirmation. The site only presents
+   the section and a fallback link. No custom submission logic lives here. */
 
-function RsvpSection({ access, onAccepted, onDeclined }) {
-  const [step, setStep] = useState('name') // name | guests | done | rejected
-  const [name, setName] = useState('')
-  const [guest1, setGuest1] = useState('')
-  const [guest2, setGuest2] = useState('')
-  const [message, setMessage] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState('')
-  const [confirmName, setConfirmName] = useState('')
-  const cardRef = useRef(null)
-  const sectionRef = useRef(null)
-
-  const nameOk = name.trim().length > 0 && name.trim().length <= RSVP_LIMITS.name
-  const companionsOk = guest2.trim() === '' || guest1.trim() !== ''
-
-  async function submitDecline() {
-    if (!nameOk || busy) return
-    setBusy(true)
-    setError('')
-    try {
-      await api.submitRsvp({ name: name.trim(), attendance: 'declined' })
-      // Record saved — only now may the dust animation run.
-      const card = cardRef.current
-      const finish = () => { setConfirmName(name.trim()); setStep('rejected') }
-      if (REDUCED || !card) finish()
-      else anime({ targets: card, opacity: [1, 0], scale: [1, 1.03], filter: ['blur(0px)', 'blur(7px)'], duration: 1000, easing: 'easeInQuad', complete: finish })
-      onDeclined?.()
-    } catch (err) {
-      // A failed write must never look like a success. Keep the name for a retry.
-      setError(describeError(err))
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  async function submitAccept() {
-    if (!nameOk || !companionsOk || busy) return
-    setBusy(true)
-    setError('')
-    try {
-      await api.submitRsvp({
-        name: name.trim(),
-        attendance: 'accepted',
-        guest1: guest1.trim(),
-        guest2: guest2.trim(),
-        message: message.trim(),
-      })
-      // Server confirmed the write — play the cinematic handoff.
-      burstAt(cardRef.current, 30)
-      setConfirmName(name.trim())
-      setStep('done')
-      onAccepted?.()
-      setTimeout(() => {
-        document.getElementById('music')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 900)
-    } catch (err) {
-      setError(describeError(err))
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  const remaining = RSVP_LIMITS.message - message.length
-
+function RsvpSection() {
+  // Facade: the Form iframe only loads after a tap. Google's frame fetches
+  // font files that 404 in embedded mode; deferring load keeps page boot
+  // clean and saves mobile data. Fallback link always available.
+  const [loaded, setLoaded] = useState(false)
   return (
-    <section id="rsvp" ref={sectionRef} className="sec rsvp-sec" aria-busy={busy}>
-      <SectionHeading icon={MailIcon} kicker={SITE.rsvpDeadline} title="RSVP" light sub="Add up to two companions and a message for the couple." />
-      <div ref={cardRef} className={`rsvp-card ${step === 'guests' ? 'navy' : ''}`} data-reveal>
-        {error && (
-          <p className="rsvp-error" role="alert">
-            <SparkleIcon size={15} /> {error} Your entries are kept — press the button again to retry.
-          </p>
-        )}
-
-        {step === 'name' && (
-          <div className="rsvp-step">
-            <Field label="Your name" hint="Please enter the name we should greet on the day">
-              <input
-                placeholder="Enter your name..."
-                value={name}
-                maxLength={RSVP_LIMITS.name}
-                disabled={busy}
-                autoComplete="name"
-                onChange={(e) => setName(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && nameOk && setStep('guests')}
-              />
-            </Field>
-            <div className="rsvp-actions">
-              <button className="btn btn-gold" disabled={!nameOk || busy} onClick={() => setStep('guests')}>
-                <CheckIcon size={16} /> YES I'M GOING TO ATTEND!
-              </button>
-              <button className="btn btn-outline" disabled={!nameOk || busy} onClick={submitDecline}>
-                {busy ? 'Saving…' : 'SORRY, I HAVE SOMETHING TO DO'}
-              </button>
-            </div>
+    <section id="rsvp" className="sec rsvp-sec">
+      <SectionHeading icon={MailIcon} kicker={SITE.rsvpDeadline} title="RSVP" light sub="Please answer the form below." />
+      <div className="rsvp-card" data-reveal>
+        {loaded ? (
+          <div className="rsvp-embed">
+            <iframe
+              title="RSVP form"
+              src={RSVP_FORM.embedUrl}
+              width="640"
+              height="1029"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            >
+              Loading…
+            </iframe>
+          </div>
+        ) : (
+          <div className="rsvp-facade">
+            <p className="rsvp-eyebrow"><MailIcon size={15} /> Google Form</p>
+            <p className="rsvp-note">Tap to load the RSVP form right here.</p>
+            <button className="btn btn-gold" onClick={() => setLoaded(true)}>
+              <MailIcon size={16} /> Load RSVP Form
+            </button>
           </div>
         )}
-
-        {step === 'guests' && (
-          <div className="rsvp-step">
-            <p className="rsvp-eyebrow"><UsersIcon size={15} /> Additional Guests</p>
-            <p className="rsvp-note">You can bring 1 or 2 companions</p>
-            <div className="rsvp-grid">
-              <Field label="Guest 1:"><input placeholder="full name" value={guest1} maxLength={RSVP_LIMITS.companion} disabled={busy} onChange={(e) => setGuest1(e.target.value)} /></Field>
-              <Field label="Guest 2"><input placeholder="full name" value={guest2} maxLength={RSVP_LIMITS.companion} disabled={busy} onChange={(e) => setGuest2(e.target.value)} /></Field>
-            </div>
-            {!companionsOk && <p className="rsvp-note">Please fill in Guest 1 before adding Guest 2.</p>}
-            <Field label="Leave a message for the couple" hint={`${remaining} characters left`}>
-              <textarea rows={3} placeholder="Express your heartfelt message here..." value={message} maxLength={RSVP_LIMITS.message} disabled={busy} onChange={(e) => setMessage(e.target.value)} />
-            </Field>
-            <div className="rsvp-actions">
-              <button className="btn btn-outline" disabled={busy} onClick={() => setStep('name')}><ArrowLeftIcon size={16} /> Back</button>
-              <button className="btn btn-gold" disabled={busy || !companionsOk} onClick={submitAccept}>
-                {busy ? 'Sending…' : <><MailIcon size={16} /> Send RSVP</>}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step === 'done' && (
-          <div className="rsvp-done">
-            <div className="rsvp-done-badge"><HeartIcon size={26} /></div>
-            <h3>Thank you, {confirmName}!</h3>
-            <Divider />
-            <p>Your RSVP is recorded. The curtain is about to rise on our full wedding programme.</p>
-          </div>
-        )}
-
-        {step === 'rejected' && (
-          <div className="rsvp-done">
-            <div className="rsvp-done-badge soft"><FlowerIcon size={26} /></div>
-            <h3>Thank you, {confirmName || 'friend'}.</h3>
-            <Divider />
-            <p>You'll be dearly missed — your blessing reaches us all the same. Thank you for letting us know.</p>
-          </div>
-        )}
+        <div className="rsvp-actions">
+          <a className="btn btn-gold" href={RSVP_FORM.linkUrl} target="_blank" rel="noreferrer">
+            <MailIcon size={16} /> Open RSVP Form
+          </a>
+        </div>
+        <p className="rsvp-foot" data-reveal>Form not loading? Use the button above to open it in a new tab.</p>
       </div>
-      {!access?.name && step === 'name' && (
-        <p className="rsvp-foot" data-reveal>Open to everyone — no invitation code needed.</p>
-      )}
     </section>
   )
 }
@@ -425,52 +270,6 @@ function CountdownSection() {
         </div>
       </div>
     </section>
-  )
-}
-
-/* --------------------------- Protected programme ---------------------------- */
-
-function ProtectedProgram({ access, program, justAccepted, onJustAcceptedDone, ...music }) {
-  if (access.state === 'checking') {
-    return (
-      <section className="sec"><p className="gate-checking" data-reveal>Checking your access…</p></section>
-    )
-  }
-
-  if (access.state !== 'granted' || !program) {
-    return (
-      <section id="program-gate" className="sec gate">
-        <div className="gate-panel" data-reveal>
-          <div className="gate-badge"><HeartIcon size={26} /></div>
-          <h3>The Wedding Programme</h3>
-          <Divider />
-          <p>
-            Our complete wedding programme — the entourage, venues with maps, our story, attire guide,
-            timeline and photo gallery — is reserved for guests who have confirmed their attendance.
-          </p>
-          <p>Please send your RSVP to unlock it. You can also revisit the invitation any time.</p>
-          <div className="gate-actions">
-            <button className="btn btn-gold" onClick={() => document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-              <MailIcon size={16} /> Go to RSVP
-            </button>
-            <button className="btn btn-outline" onClick={() => document.getElementById('top')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-              <ArrowLeftIcon size={16} /> Back to invitation
-            </button>
-          </div>
-          <p className="gate-note">Already responded that you're attending? Reload the page or open this link in the same browser to continue.</p>
-        </div>
-      </section>
-    )
-  }
-
-  return (
-    <>
-      <ProgramStage program={program} autoOpen={justAccepted} {...music} />
-      {Array.isArray(program.photos?.strip) && <StorySection program={program} />}
-      <EntourageSection />
-      <DetailsSection program={program} />
-      {Array.isArray(program.photos?.slideshow) && <GallerySection program={program} />}
-    </>
   )
 }
 

@@ -4,25 +4,22 @@ import {
   MusicIcon, PlayIcon, PauseIcon,
 } from './Icons.jsx'
 
-/** Public anchors stay available; programme anchors appear after access is granted. */
-function navItems(granted) {
-  const publicItems = [
+/** All anchors: every section is public, no access gate. */
+function navItems() {
+  return [
     { id: 'top', label: 'Invite', Icon: HomeIcon },
     { id: 'portrait', label: 'Couple', Icon: ChurchIcon },
     { id: 'rsvp', label: 'RSVP', Icon: MailIcon },
     { id: 'venue', label: 'Venue', Icon: ChurchIcon },
     { id: 'countdown', label: 'Countdown', Icon: ClockIcon },
-  ]
-  const programItems = [
     { id: 'music', label: 'Music', Icon: MusicIcon },
     { id: 'entourage', label: 'Weds', Icon: UsersIcon },
     { id: 'details', label: 'Details', Icon: FlowerIcon },
   ]
-  return granted ? [...publicItems.slice(0, 4), ...programItems] : publicItems.slice(0, 4)
 }
 
-export function BottomNav({ visible, granted = false }) {
-  const items = navItems(granted)
+export function BottomNav({ visible }) {
+  const items = navItems()
   return (
     <nav className={`bottom-nav ${visible ? 'show' : ''}`} aria-label="Sections">
       {items.map(({ id, label, Icon }) => (

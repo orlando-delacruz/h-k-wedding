@@ -8,10 +8,9 @@ import { MusicIcon, MapPinIcon, CalendarIcon, SparkleIcon, PlayIcon } from './Ic
 const REDUCED = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 /**
- * The cinematic heart of the protected programme: curtain reveal, gramophone,
- * venues with maps, and the outline of the day. Rendered only for an authorized
- * attending session. Every field is read defensively — a missing asset must never
- * blank the page.
+ * The cinematic announcement: curtain reveal, gramophone, venues with maps,
+ * and the outline of the day. All content is public. Every field is read
+ * defensively — a missing asset must never blank the page.
  */
 export default function ProgramStage({ program, autoOpen, songIdx, playing, needTap, onToggle, onSelectSong, onPlayPressed }) {
   const [opened, setOpened] = useState(false)
