@@ -1182,6 +1182,16 @@ textarea:focus {
   color: var(--gold-4);
 }
 
+/* The second venue link (the owner's own street view) sits beside the first. */
+.venue-link + .venue-link {
+  margin-left: 16px;
+}
+
+.venue-link-alt {
+  color: var(--muted);
+  border-bottom-color: rgba(174, 180, 207, .35);
+}
+
 /* ---------- countdown + calendar (7) — navy section, white gold-bordered card ---------- */
 .count-sec {
   background: linear-gradient(180deg, var(--navy) 0%, var(--midnight) 100%);

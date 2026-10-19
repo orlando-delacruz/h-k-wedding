@@ -12,7 +12,9 @@ All placeholders allowed until real assets arrive. Keep paths stable so swap is 
 ## 2. Google Maps links
 
 - [ ] Ceremony: Girasoles Farm, Candelaria — exact share/embed URL
-- [ ] Reception: Bride's Residence, Sitio Bibingkahan, Concepcion Uno, Sariaya, Quezon — exact URL
+- [x] Reception: Bride's Residence, Sitio Bibingkahan, Concepcion Uno, Sariaya, Quezon
+      — pin `13.9358,121.469708`; both links route from the guest's device
+      (`maps/dir/?api=1&destination=…` and the `saddr=Your+Location` embed)
 - Swap in `src/config/program.js` only.
 
 ## 3. Google Form

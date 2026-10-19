@@ -34,6 +34,7 @@ export default function ProgramStage({ program }) {
               <p className="venue-name">{v.name}</p>
               {v.address && <p className="venue-address">{v.address}</p>}
               {v.mapLink && <a className="venue-link" href={v.mapLink} target="_blank" rel="noreferrer">Open map</a>}
+              {v.mapStreetView && <a className="venue-link venue-link-alt" href={v.mapStreetView} target="_blank" rel="noreferrer">See the house</a>}
             </div>
           ))}
         </section>

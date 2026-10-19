@@ -14,7 +14,9 @@ We started talking sa Instagram — he replied to my "note" regarding sa event n
 Fast forward — we are currently 2 years and 11 months in, before we finally tie the knot.`,
 
   // Public invitation already names the venues; full addresses and map links
-  // live here. Map URLs are provisional until the owner supplies official links.
+  // live here. The reception pin is the owner's own coordinates and both its
+  // links start from the guest's device. The ceremony link is provisional
+  // until the owner supplies one.
   venues: [
     {
       id: 'ceremony',
@@ -29,8 +31,13 @@ Fast forward — we are currently 2 years and 11 months in, before we finally ti
       title: 'Reception Venue',
       name: "Bride's Residence Sittio Bibingkahan Concepcion Uno Sariaya Quezon",
       address: "Bride's Residence, Sitio Bibingkahan, Concepcion Uno, Sariaya, Quezon, Philippines",
-      mapLink: 'https://www.google.com/maps?q=Sitio+Bibingkahan+Concepcion+Uno+Sariaya+Quezon+Philippines',
-      mapEmbed: 'https://www.google.com/maps?q=Sitio+Bibingkahan+Concepcion+Uno+Sariaya+Quezon+Philippines&output=embed',
+      // The pin is the owner's own location. The route starts at the guest's
+      // device (no origin is set) and is forced in through the road entrance
+      // at 13°55'53.9"N 121°28'04.9"E, so the approach is the one that works.
+      // The street-view link is the owner's shared view of the house.
+      mapLink: 'https://www.google.com/maps/dir/?api=1&destination=13.9358020,121.4697079&waypoints=13.931639,121.468028&travelmode=driving',
+      mapEmbed: 'https://www.google.com/maps?output=embed&saddr=Your+Location&daddr=13.9358020,121.4697079',
+      mapStreetView: 'https://www.google.com/maps/@13.9355631,121.4687347,3a,62.1y,94.45h,82.9t/data=!3m5!1e1!3m3!1s9tYP5rWniRGXbBG9BhuD_Q!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fpanoid%3D9tYP5rWniRGXbBG9BhuD_Q%26w%3D900%26h%3D600%26ll%3D0.0,0.0%26yaw%3D94.0%26pitch%3D8.0%26cb_client%3Dgmm.iv.android?utm_source=mstt_0&g_ep=CAESBjI1LjMuMRgAIIGBASpKLDk0MjA3Mzk0LDk0MjA3NTA2LDk0MjA4NTA2LDk0MjE4NjUzLDk0MjI5ODM5LDk0Mjc1MTY4LDEwMDgzODM1OSwxMjE4MTY0NjFCAlBI&skid=f827a94c-9cc1-4b0d-9494-c76a764bbad0&g_st=afm',
     },
   ],
 
