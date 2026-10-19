@@ -18,6 +18,7 @@ const stage = read('src', 'components', 'ProgramStage.jsx')
 const gate = read('src', 'components', 'AccessGate.jsx')
 const envelope = read('src', 'components', 'EnvelopeReveal.jsx')
 const chrome = read('src', 'components', 'chrome.jsx')
+const download = read('src', 'components', 'DownloadSection.jsx')
 const site = read('src', 'config', 'site.js')
 const ent = read('src', 'config', 'entourage.js')
 const program = read('src', 'config', 'program.js')
@@ -44,6 +45,13 @@ const checks = [
   ['hero scroll line', app, 'Scroll down'],
   ["couple's own portrait", site, "heroPortrait: '/images/main.jpg'"],
   ['portrait file is on disk', files('public', 'images'), 'main.jpg'],
+
+  /* ---- the couple's wedding timeline, under the portrait ---- */
+  ["timeline image is wired in the config", program, "timeline: '/images/wedding-timeline.jpg'"],
+  ['timeline file is on disk', files('public', 'images'), 'wedding-timeline.jpg'],
+  ['portrait section shows the timeline strip', app, 'timeline-strip'],
+  ['timeline is not shown twice', app, '___absent:WEDDING TIMELINE___'],
+  ['no fact pills under the portrait', app + styles, '___absent:portrait-meta___'],
 
   /* ---- announcement (Sections 7): removed by the owner ---- */
   ['no announcement heading', stage, '___absent:TWO HEARTS___'],
@@ -134,7 +142,8 @@ const checks = [
   ['covenant bearer', ent, 'Francis Rhyme Carabuena'],
 
   /* ---- story (Section 14) ---- */
-  ['story copy present', program, 'Two souls, two paths, one promise.'],
+  ['story copy present', program, 'Nagkakilala kami sa isang Leadership Training'],
+  ['no placeholder story comes back', program, '___absent:Two souls, two paths___'],
   ['no temporary notes in the UI', app + program + stage, '___absent:Temporary___'],
   ['no placeholder labels in the UI', app + program, '___absent:image placeholder___'],
   ['film strip', app, 'film-track'],
@@ -143,7 +152,15 @@ const checks = [
   ['details heading', app, 'The Wedding Details'],
   ['attire heading', app, 'ATTIRE GUIDE'],
   ['attire copy', app, "We would be honored if you could join us in your best attire. Let's make our special day more memorable in these colors."],
-  ['timeline heading', app, 'WEDDING TIMELINE'],
+  ['attire colour sky blue', app, 'Sky Blue'],
+  ['attire colour gray', app, 'Gray'],
+  ['attire colour champagne', app, 'Champagne'],
+  ['attire colour dusty pink', app, 'Dusty Pink'],
+  ['attire legend swatch is styled', styles, '.floral-legend .sky i'],
+  ['no midnight in the attire legend', app, '___absent:>Midnight<___'],
+  ['no navy in the attire legend', app, '___absent:>Navy<___'],
+  ['no white in the attire legend', app, '___absent:>White<___'],
+  ['no gold in the attire legend', app, '___absent:>Gold<___'],
   ['gift heading', app, 'GIFT GUIDE'],
   ['gift copy', app, "With all that we have, we've been blessed."],
   ['gift QR row is wired', app, 'className="qr-row"'],
@@ -211,6 +228,20 @@ const checks = [
   ['reduced motion guard', styles, 'prefers-reduced-motion'],
   ['focus visible', styles, 'focus-visible'],
   ['metallic gradient', styles, '--grad-gold'],
+
+  /* ---- downloads (last section) ---- */
+  ['download section is mounted', app, '<DownloadSection />'],
+  ['download section has its anchor', download, 'id="downloads"'],
+  ['download section title', download, 'Download Soft Copies'],
+  ['download option for the programs', download, 'Download Wedding Programs'],
+  ['download option for the invitation cards', download, 'Download Invitation Cards'],
+  ['download sets live in the config', program, 'export const DOWNLOADS'],
+  ['program leaves are listed', program, '/images/program/wedding-ceremony.jpg'],
+  ['invitation cards are listed', program, '/images/invitation/image-8.jpg'],
+  ['program leaves are on disk', files('public', 'images', 'program'), 'wedding-ceremony.jpg'],
+  ['reception program is on disk', files('public', 'images', 'program'), 'wedding-reception.jpg'],
+  ['invitation cards are on disk', files('public', 'images', 'invitation'), 'image-1.jpg'],
+  ['the last invitation card is on disk', files('public', 'images', 'invitation'), 'image-8.jpg'],
 
   /* ---- no backend (Sections 8/9/18) ---- */
   ['no api calls in frontend', app + stage, '___absent:/api/___'],

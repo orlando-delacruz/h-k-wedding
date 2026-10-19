@@ -5,8 +5,13 @@
 // the real assets (see docs/07-assets-todo.md). Never invent replacements.
 
 export const PROGRAM = {
-  // The couple's story. Replaced when they supply their own text (docs/07).
-  story: `Two souls, two paths, one promise. From quiet mornings to loud laughter with friends, every small moment led here. Through distance and doubt, kindness won. Now, before family and God, we choose each other — today, tomorrow, always.`,
+  // The couple's own story, as they wrote it (docs/03). Their words, their
+  // order, their details — never paraphrased into something else.
+  story: `Nagkakilala kami sa isang Leadership Training. Pareho kaming graduating students by that time. Napansin ko sya because he was the host back then and I find him interesting in a way, but the catch here is he followed my social media accounts without me knowing na siya yun.
+
+We started talking sa Instagram — he replied to my "note" regarding sa event na nangyari, and nag tuloy-tuloy na yun, and we started na magkita. Our first meet was in the school's library, and after that lagi na kaming magkasama sa school, personal na lakad, and everything in between.
+
+Fast forward — we are currently 2 years and 11 months in, before we finally tie the knot.`,
 
   // Public invitation already names the venues; full addresses and map links
   // live here. Map URLs are provisional until the owner supplies official links.
@@ -64,9 +69,9 @@ export const PROGRAM = {
     // The couple's attire guide sheet (docs/07): eight looks in one image, so
     // it is shown whole — the frame must never crop it.
     attireGuide: '/images/attire/attire.jpg',
-    // The couple's timeline image goes here (docs/07); the block is hidden until
-    // a URL exists, so the page never shows an empty placeholder.
-    timeline: null,
+    // The couple's timeline image (docs/07): one wide strip, 2048×683 (3:1).
+    // Shown whole — the frame must never crop it.
+    timeline: '/images/wedding-timeline.jpg',
 
     // The photo that closes the Programme section (the couple's own shot,
     // docs/07). Empty until they supply it — swap the URL only. No stock
@@ -88,4 +93,26 @@ export const PROGRAM = {
   },
 
   hashtag: '#NaKHATitiyakNaKayHARTH',
+}
+
+// Soft copies and printed cards the couple can hand to guests (docs/07).
+// Files live in public/images/ and are served as-is: swap a path, not a name.
+export const DOWNLOADS = {
+  // The two program leaves (ceremony + reception).
+  programs: [
+    { label: 'Wedding Ceremony Program', file: 'wedding-ceremony', src: '/images/program/wedding-ceremony.jpg' },
+    { label: 'Wedding Reception Program', file: 'wedding-reception', src: '/images/program/wedding-reception.jpg' },
+  ],
+  // The printed invitation set, in order: cover, invitation, entourage,
+  // sponsors, details, guest attire + timeline, gift guide + reminder, QR back.
+  invitations: [
+    { label: 'Invitation — Cover', file: 'invitation-1-cover', src: '/images/invitation/image-1.jpg' },
+    { label: 'Invitation — Main Card', file: 'invitation-2-main', src: '/images/invitation/image-2.jpg' },
+    { label: 'Invitation — Entourage & Principal Sponsors', file: 'invitation-3-entourage', src: '/images/invitation/image-3.jpg' },
+    { label: 'Invitation — Secondary Sponsors & Bearers', file: 'invitation-4-sponsors', src: '/images/invitation/image-4.jpg' },
+    { label: 'Invitation — Entourage Attire', file: 'invitation-5-entourage-attire', src: '/images/invitation/image-5.jpg' },
+    { label: 'Invitation — Guest Attire & Timeline', file: 'invitation-6-guest-attire', src: '/images/invitation/image-6.jpg' },
+    { label: 'Invitation — Gift Guide & Reminder', file: 'invitation-7-gift-reminder', src: '/images/invitation/image-7.jpg' },
+    { label: 'Invitation — Venue Map (QR)', file: 'invitation-8-map', src: '/images/invitation/image-8.jpg' },
+  ],
 }

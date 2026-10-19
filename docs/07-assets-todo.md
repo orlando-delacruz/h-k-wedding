@@ -39,12 +39,15 @@ All placeholders allowed until real assets arrive. Keep paths stable so swap is 
 - [x] Photoshoot (7 files) feeding both the story film strip and the closing
       slideshow (`program.photos.strip` / `.slideshow`) —
       `public/images/photoshoot/*.jpg`
-- [ ] Real story text for `src/config/program.js` (the current text is a draft)
+- [x] Real story text for `src/config/program.js` — the couple's own words, in
+      the `story` key and reproduced verbatim (docs/03), never paraphrased
 - [x] Attire-guide image (`program.photos.attireGuide`) — the couple's own sheet
       at `public/images/attire/attire.jpg`, shown whole (`contain`). Replace the
       file (or point the path elsewhere) if it changes.
-- [ ] Timeline image (`program.photos.timeline`, `null` — the block stays hidden
-      until a URL exists)
+- [x] Timeline image (`program.photos.timeline`) — the couple's own strip at
+      `public/images/wedding-timeline.jpg`, 2048×683 (3:1), shown whole and
+      never cropped. It sits in section 2, under the portrait, and is not
+      repeated in the Wedding Details section.
 - [ ] Programme photo (`program.photos.programme`, `''` — the gold frame that
       closes the Programme section appears only once a URL exists; no stock
       substitute is shown)
@@ -68,6 +71,21 @@ All placeholders allowed until real assets arrive. Keep paths stable so swap is 
   config at a different path). Keep the frame ratio in mind: the slideshow and
   the film strip are both 4:5 portrait frames, so portrait photos sit in them
   best; landscape frames are centre-cropped.
+
+## 6. Soft copies + printed cards (downloadable)
+
+- [x] Program leaves (2 files) — `public/images/program/wedding-ceremony.jpg`
+      and `public/images/program/wedding-reception.jpg`, listed in
+      `DOWNLOADS.programs`.
+- [x] Printed invitation set (8 files) — `public/images/invitation/image-1.jpg`
+      through `image-8.jpg`: cover, main card, entourage + principal sponsors,
+      secondary sponsors + bearers, entourage attire, guest attire + timeline,
+      gift guide + reminder, venue-map QR back. Listed in
+      `DOWNLOADS.invitations`.
+- All ten files are downloadable from the last section of the page:
+      “Download Wedding Programs” saves the two program leaves and
+      “Download Invitation Cards” saves the eight cards. The browser may ask
+      once for permission to download multiple files.
 
 ## Drop-in checklist
 

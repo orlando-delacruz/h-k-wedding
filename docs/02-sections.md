@@ -27,6 +27,11 @@ renders in — the source of truth is `src/App.jsx`.
 
 - Portrait image, “The wedding of”, “Harthwel & Khatrina”,
   “November 30, 2026 · Girasoles Farm”. Names in Pinyon Script.
+- Below the portrait: the couple's **wedding timeline** strip
+  (`program.photos.timeline`, `public/images/wedding-timeline.jpg`) — 2048×683
+  (3:1), shown whole and never cropped.
+- The three fact pills that used to sit there (6:30 AM Ceremony / Girasoles
+  Farm / Sariaya, Quezon) were removed; the timeline strip takes their place.
 - The portrait is the couple's own (`PHOTOS.heroPortrait`,
   `public/images/main.jpg`); the date and venue above it are bold.
 
@@ -80,10 +85,12 @@ renders in — the source of truth is `src/App.jsx`.
 ## 9. Wedding details (white floral frame)
 
 - Floral frame: chrysanthemums + lilacs + 2 complementary types.
-- “ATTIRE GUIDE:” + the couple's own guide sheet, shown whole (`contain`, never
+- “ATTIRE GUIDE:” + the guest colour legend (Sky Blue, Gray, Champagne, Dusty
+  Pink) + the couple's own guide sheet, shown whole (`contain`, never
   cropped) so all eight looks stay visible, “GIFT GUIDE:”, “REMINDER” /
-  “With Respect” copy from `03-copy.md`. The timeline block appears only once the
-  couple supplies its image (`program.photos.timeline`).
+  “With Respect” copy from `03-copy.md`.
+- The wedding timeline is not repeated here: it sits in section 2, under the
+  couple's portrait.
 - Three gift QR codes (`program.photos.giftQr`) sit under the Gift Guide copy, one
   per row on a phone and three across from 560px, each on the white ground a
   scanner needs and labelled with the account it belongs to. Tapping one opens the
@@ -98,3 +105,14 @@ renders in — the source of truth is `src/App.jsx`.
   decorative signature overlay, never covering faces. The heading is bare — no
   camera icon and no hashtag line above the photographs, since the hashtag rides
   on them.
+
+## 11. Downloads (last section)
+
+- The last section before the footer (`src/components/DownloadSection.jsx`,
+  `id="downloads"`): an antique gold frame holding a single “Download” button.
+- Tapping the button reveals two options — “Download Wedding Programs” and
+  “Download Invitation Cards”.
+- Each option saves its whole set in one go: the two program leaves (ceremony
+  and reception) and the eight printed invitation cards.
+- The browser may ask once for permission to download multiple files; that is
+  expected and normal.

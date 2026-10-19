@@ -50,15 +50,24 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
 - November 2026, November 30 gold-circled
 - Calendar note: “Save the date” (replaces “November 30 — The Golden Day”)
 
+## Our story
+
+The couple's own words, reproduced exactly as they wrote them (the `story`
+string in `src/config/program.js`). Never reworded, never "improved".
+
+Nagkakilala kami sa isang Leadership Training. Pareho kaming graduating students by that time. Napansin ko sya because he was the host back then and I find him interesting in a way, but the catch here is he followed my social media accounts without me knowing na siya yun.
+
+We started talking sa Instagram — he replied to my "note" regarding sa event na nangyari, and nag tuloy-tuloy na yun, and we started na magkita. Our first meet was in the school's library, and after that lagi na kaming magkasama sa school, personal na lakad, and everything in between.
+
+Fast forward — we are currently 2 years and 11 months in, before we finally tie the knot.
+
 ## Wedding details
 
 ATTIRE GUIDE:
 
 “We would be honored if you could join us in your best attire. Let's make our special day more memorable in these colors.”
 
-WEDDING TIMELINE:
-
-(Timeline image placeholder — only 6:30 AM ceremony is confirmed.)
+Guest colour palette: Sky Blue, Gray, Champagne, Dusty Pink.
 
 GIFT GUIDE:
 
@@ -81,3 +90,12 @@ Please help us keep the surprise! We ask that you refrain from posting photos of
 ## Final slideshow
 
 - Decorative signature hashtag: #NaKHATitiyakNaKayHARTH (overlay, not covering faces)
+
+## Downloads
+
+- “Download” — the button that opens the two options
+- “Download Wedding Programs”
+- “Download Invitation Cards”
+
+Each option saves its whole set: the two program leaves, and the eight printed
+invitation cards.

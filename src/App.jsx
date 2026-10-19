@@ -7,12 +7,13 @@ import { SectionHeading, Divider, GoldFrame, Ornament } from './components/ui.js
 import { BottomNav, MusicBar } from './components/chrome.jsx'
 import ProgramStage from './components/ProgramStage.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import DownloadSection from './components/DownloadSection.jsx'
 import AccessGate from './components/AccessGate.jsx'
 import EnvelopeReveal from './components/EnvelopeReveal.jsx'
 import QrLightbox from './components/QrLightbox.jsx'
 import { FloralCorner } from './components/Floral.jsx'
 import {
-  CalendarIcon, MapPinIcon, HomeIcon, HeartIcon, GiftIcon,
+  CalendarIcon, HeartIcon, GiftIcon,
   DressIcon, CameraOffIcon, UsersIcon, ClockIcon, ScrollIcon,
   ChevronDownIcon, FlowerIcon, SparkleIcon,
 } from './components/Icons.jsx'
@@ -208,11 +209,18 @@ function InvitationPage({ startWithEnvelope }) {
             </GoldFrame>
           </Tilt>
         </div>
-        <div className="portrait-meta">
-          <span {...dly(0)}><ClockIcon size={15} /> 6:30 AM Ceremony</span>
-          <span {...dly(1)}><MapPinIcon size={15} /> Girasoles Farm</span>
-          <span {...dly(2)}><HomeIcon size={15} /> Sariaya, Quezon</span>
-        </div>
+        {/* The couple's wedding timeline, shown whole under the portrait. */}
+        {PROGRAM.photos.timeline && (
+          <div className="timeline-strip" data-reveal>
+            <img
+              src={PROGRAM.photos.timeline}
+              alt="Wedding timeline: 6:30 ceremony, 8:45 photo op, 10:00 am reception, 1:00 pm end of program"
+              width="2048"
+              height="683"
+              loading="lazy"
+            />
+          </div>
+        )}
       </section>
 
       {/* ————— 7 · Countdown + calendar ————— */}
@@ -226,6 +234,9 @@ function InvitationPage({ startWithEnvelope }) {
         <DetailsSection program={PROGRAM} />
         <GallerySection program={PROGRAM} />
       </ErrorBoundary>
+
+      {/* ————— Last section: soft copies + printed cards ————— */}
+      <DownloadSection />
 
       <footer className="footer">
         <Ornament />
@@ -384,10 +395,10 @@ function DetailsSection({ program }) {
           <p>We would be honored if you could join us in your best attire. Let's make our special day more memorable in these colors.</p>
 
           <p className="floral-legend">
-            <span className="mid"><i />Midnight</span>
-            <span className="nav"><i />Navy</span>
-            <span className="wht"><i />White</span>
-            <span className="gld"><i />Gold</span>
+            <span className="sky"><i />Sky Blue</span>
+            <span className="gray"><i />Gray</span>
+            <span className="champ"><i />Champagne</span>
+            <span className="dusty"><i />Dusty Pink</span>
           </p>
 
           {program?.photos?.attireGuide && (
@@ -405,16 +416,6 @@ function DetailsSection({ program }) {
             </Tilt>
           )}
         </article>
-
-        {program?.photos?.timeline && (
-          <article className="detail-block">
-            <h3><ClockIcon size={20} /> WEDDING TIMELINE</h3>
-            <Divider />
-            <Tilt max={5} className="detail-img-tilt">
-              <img src={program.photos.timeline} alt="Wedding timeline" loading="lazy" className="detail-img" />
-            </Tilt>
-          </article>
-        )}
 
         <article className="detail-block">
           <h3><GiftIcon size={20} /> GIFT GUIDE</h3>

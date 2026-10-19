@@ -121,7 +121,7 @@ const browser = await chromium.launch({ executablePath: CHROME, headless: true }
 try {
   for (const viewport of [{ width: 360, height: 740 }, { width: 390, height: 844 }]) {
     const tag = `${viewport.width}px`
-    const ctx = await browser.newContext({ viewport })
+    const ctx = await browser.newContext({ viewport, acceptDownloads: true })
     const { page, crashes } = await openPage(ctx)
 
     /* ----------------------------- access gate ------------------------------- */
@@ -152,6 +152,33 @@ try {
     check(`${tag}: the envelope is gone once inside`, (await page.locator('.envelope-layer').count()) === 0)
     await seeSection(page, `${tag}: hero invitation card`, '#top .hero-card')
     await seeSection(page, `${tag}: portrait`, '#portrait .portrait-img')
+    await seeSection(page, `${tag}: wedding timeline strip`, '#portrait .timeline-strip')
+    // The couple's timeline sheet is one wide image (2048×683). It must load
+    // and keep its own proportions: a cropped timeline would hide a schedule.
+    await page.locator('#portrait .timeline-strip img').scrollIntoViewIfNeeded().catch(() => {})
+    await page.waitForFunction(() => {
+      const img = document.querySelector('#portrait .timeline-strip img')
+      return !!img && img.complete && img.naturalWidth > 0
+    }, undefined, { timeout: 8000 }).catch(() => {})
+    const timeline = await page.locator('#portrait .timeline-strip img').evaluate((n) => {
+      const r = n.getBoundingClientRect()
+      return {
+        loaded: n.complete && n.naturalWidth > 0,
+        natural: `${n.naturalWidth}x${n.naturalHeight}`,
+        naturalAr: n.naturalWidth / n.naturalHeight,
+        box: `${Math.round(r.width)}x${Math.round(r.height)}`,
+        boxAr: r.height ? r.width / r.height : 0,
+        fit: getComputedStyle(n).objectFit,
+      }
+    }).catch(() => null)
+    check(`${tag}: the timeline image is loaded`, !!timeline && timeline.loaded, JSON.stringify(timeline))
+    check(`${tag}: the timeline keeps its own 3:1 shape`, !!timeline
+      && Math.abs(timeline.naturalAr - 2048 / 683) < 0.02
+      // The box follows the image (width:100%; height:auto): nothing is cropped.
+      && Math.abs(timeline.boxAr - timeline.naturalAr) < 0.02 * timeline.naturalAr,
+    JSON.stringify(timeline))
+    check(`${tag}: the timeline is never cropped`, !!timeline && (timeline.fit === 'fill' || timeline.fit === 'none'), timeline ? timeline.fit : 'no image')
+    check(`${tag}: the portrait fact pills are gone`, (await page.locator('#portrait .portrait-meta').count()) === 0)
     check(`${tag}: invitation has no RSVP section`, (await page.locator('#rsvp').count()) === 0)
     await seeSection(page, `${tag}: venues`, '#venue .venue-block')
     check(`${tag}: countdown shows 4 boxes`, (await page.locator('#countdown .count-box').count()) === 4)
@@ -222,6 +249,39 @@ try {
     check(`${tag}: the page scrolls again after the preview`, !(await page.evaluate(() => document.body.classList.contains('no-scroll'))))
     await seeSection(page, `${tag}: slideshow`, '#gallery .slideshow')
     await seeSection(page, `${tag}: footer`, '.footer')
+    await noOverflow(page, `${tag}: full page`)
+
+    /* ------------------------------ downloads -------------------------------- */
+    await seeSection(page, `${tag}: downloads section`, '#downloads')
+    const dlButton = page.locator('#downloads .dl-frame button').first()
+    check(`${tag}: the download button is framed in gold`, await dlButton.isVisible().catch(() => false))
+    await dlButton.scrollIntoViewIfNeeded().catch(() => {})
+    await dlButton.click()
+    await page.waitForTimeout(400)
+    const dlCount = await page.locator('#downloads .dl-option').count()
+    check(`${tag}: the button reveals two options`, dlCount === 2, `count=${dlCount}`)
+    const optionLabels = (await page.locator('#downloads .dl-option').allTextContents()).map((t) => t.trim())
+    check(`${tag}: the options are named after the two sets`, optionLabels.length === 2
+      && optionLabels[0] === 'Download Wedding Programs'
+      && optionLabels[1] === 'Download Invitation Cards',
+    optionLabels.join(' | '))
+    const [programDownload] = await Promise.all([
+      page.waitForEvent('download', { timeout: 10000 }),
+      page.locator('#downloads .dl-option:has-text("Download Wedding Programs")').click(),
+    ])
+    check(`${tag}: program download starts`, programDownload.suggestedFilename() === 'wedding-ceremony.jpg', programDownload.suggestedFilename())
+    // Each set is saved with a stagger: let the second program leaf go out
+    // before the next wait, so it cannot be mistaken for the first card.
+    await page.waitForTimeout(900)
+    const [inviteDownload] = await Promise.all([
+      page.waitForEvent('download', { timeout: 10000 }),
+      page.locator('#downloads .dl-option:has-text("Download Invitation Cards")').click(),
+    ])
+    // The card is saved under the name in the config (invitation-1-cover.jpg);
+    // its source file is image-1.jpg. Either name proves the first card of the
+    // set was the one that started.
+    check(`${tag}: invitation download starts`, ['image-1.jpg', 'invitation-1-cover.jpg'].includes(inviteDownload.suggestedFilename()), inviteDownload.suggestedFilename())
+    await page.waitForTimeout(900)
     await noOverflow(page, `${tag}: full page`)
 
     /* ---------------------------- the player picks songs ---------------------- */
