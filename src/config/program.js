@@ -38,23 +38,53 @@ export const PROGRAM = {
 
   // Photos remain placeholder URLs; the couple supplies the real set later.
   photos: {
+    // The couple's pre-wedding photoshoot, used twice: the film strip in Our
+    // Story and the closing slideshow. Same files, same order — portraits first,
+    // then the landscape frames (the slideshow and strip are 4:5 frames, so the
+    // portraits sit in them best). Web-sized copies; originals in
+    // `assets-originals/photoshoot/` (docs/07).
     strip: [
-      'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1200&auto=format&fit=crop',
+      '/images/photoshoot/0A4A7953.jpg',
+      '/images/photoshoot/0A4A7685.jpg',
+      '/images/photoshoot/0A4A7691.jpg',
+      '/images/photoshoot/0A4A8120.jpg',
+      '/images/photoshoot/0A4A8940.jpg',
+      '/images/photoshoot/0A4A8578.jpg',
+      '/images/photoshoot/0A4A8953.jpg',
     ],
     slideshow: [
-      'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1200&auto=format&fit=crop',
+      '/images/photoshoot/0A4A7953.jpg',
+      '/images/photoshoot/0A4A7685.jpg',
+      '/images/photoshoot/0A4A7691.jpg',
+      '/images/photoshoot/0A4A8120.jpg',
+      '/images/photoshoot/0A4A8940.jpg',
+      '/images/photoshoot/0A4A8578.jpg',
+      '/images/photoshoot/0A4A8953.jpg',
     ],
-    attireGuide: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=1200&auto=format&fit=crop',
+    // The couple's attire guide sheet (docs/07): eight looks in one image, so
+    // it is shown whole — the frame must never crop it.
+    attireGuide: '/images/attire/attire.jpg',
     // The couple's timeline image goes here (docs/07); the block is hidden until
     // a URL exists, so the page never shows an empty placeholder.
     timeline: null,
+
+    // The photo that closes the Programme section (the couple's own shot,
+    // docs/07). Empty until they supply it — swap the URL only. No stock
+    // substitute is shown in its place, so a guest never sees a photo that is
+    // not theirs; the gold frame and its sweep appear the moment a URL exists.
+    programme: '',
+
+    // The couple's gift QR codes under the Gift Guide copy: GCash first, then
+    // the two bank accounts. Local files in `public/images/gift-qr/`, served as
+    // `/images/gift-qr/...` — swap a path (or add an entry) without code
+    // changes. The label is printed under each code, so a guest knows which is
+    // which before scanning. Every code is shown whole and uncropped, with the
+    // frame's light sweep kept off the modules, so it stays scannable.
+    giftQr: [
+      { label: 'GCash', src: '/images/gift-qr/gcash.jpg' },
+      { label: 'China Bank', src: '/images/gift-qr/chinabank.jpg' },
+      { label: 'Mari Bank', src: '/images/gift-qr/maribank.jpg' },
+    ],
   },
 
   hashtag: '#NaKHATitiyakNaKayHARTH',

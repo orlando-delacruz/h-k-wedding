@@ -45,7 +45,7 @@
 | 13 | Hadrian Casipit | Nikki Bruce |
 | 14 | Jessie Opalda | Shella Labalan |
 
-UI rule: on mobile stack pairs as 2-col grid or paired cards, keep numbering, keep pairing visible.
+UI rule: on mobile stack pairs as 2-col grid or paired cards, keep pairing visible. Pair numbers are not shown on the page (owner decision, 2026-10-18); the pairing itself stays legible — the heart between two names for principal sponsors, “&” for secondary pairs.
 
 ## Other members
 - LITTLE BRIDE — Graceharth Ilustre

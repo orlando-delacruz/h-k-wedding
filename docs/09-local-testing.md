@@ -28,10 +28,12 @@ story, entourage, details, slideshow, footer.
 3. Submit a test response from the live Form and confirm it lands in the
    owner's Responses tab (needs Form access — otherwise check the link only).
 
-## 3. Entry curtain + music
+## 3. Envelope opening + music
 
-Enter the code: the velvet curtain holds ~1.4 s, then opens while Pahintulot
-(the default song, from `public/music/`) starts. “Tap to unveil” skips the hold.
+Enter the code: the velvet envelope holds ~0.9 s, the gold-tipped flap swings open
+in 3D, the front page is drawn out of the pocket and set down on the hero as the
+envelope dissolves behind it and Pahintulot (the default song, from
+`public/music/`) starts. “Tap to unveil” skips ahead.
 
 The floating player is the only music UI: the disc plays/pauses, the nameplate
 opens the song list (2 tracks), a finished track rolls into the next one, and

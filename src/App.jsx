@@ -8,10 +8,11 @@ import { BottomNav, MusicBar } from './components/chrome.jsx'
 import ProgramStage from './components/ProgramStage.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import AccessGate from './components/AccessGate.jsx'
-import EntryCurtain from './components/EntryCurtain.jsx'
+import EnvelopeReveal from './components/EnvelopeReveal.jsx'
+import QrLightbox from './components/QrLightbox.jsx'
 import { FloralCorner } from './components/Floral.jsx'
 import {
-  CalendarIcon, MapPinIcon, HomeIcon, MusicIcon, HeartIcon, GiftIcon,
+  CalendarIcon, MapPinIcon, HomeIcon, HeartIcon, GiftIcon,
   DressIcon, CameraOffIcon, UsersIcon, ClockIcon, ScrollIcon,
   ChevronDownIcon, FlowerIcon, SparkleIcon,
 } from './components/Icons.jsx'
@@ -73,8 +74,8 @@ function readStoredUnlock() {
 
 export default function App() {
   const [unlocked, setUnlocked] = useState(readStoredUnlock)
-  // Fresh code entry only: the entry curtain never shows on refresh, only in
-  // the moment the guest earns their way inside.
+  // Fresh code entry only: the envelope never opens on refresh, only in the
+  // moment the guest earns their way inside.
   const [freshEntry, setFreshEntry] = useState(false)
 
   function unlock(code) {
@@ -85,28 +86,29 @@ export default function App() {
 
   if (!unlocked) return <AccessGate onUnlock={unlock} />
 
-  return <InvitationPage startWithCurtain={freshEntry} />
+  return <InvitationPage startWithEnvelope={freshEntry} />
 }
 
-function InvitationPage({ startWithCurtain }) {
+function InvitationPage({ startWithEnvelope }) {
   // One reveal scan covers everything; this page mounts after the gate opens.
   useReveal()
 
   /* A guest may have scrolled the gate (it is taller than a phone screen)
      before unlocking, so a fresh confirmation always opens on the hero. A
-     refresh — no curtain — keeps whatever place they were reading. */
+     refresh — no envelope — keeps whatever place they were reading. */
   useEffect(() => {
-    if (!startWithCurtain) return
+    if (!startWithEnvelope) return
     const html = document.documentElement
     const prev = html.style.scrollBehavior
     html.style.scrollBehavior = 'auto' // don't animate past the hero
     window.scrollTo(0, 0)
     html.style.scrollBehavior = prev
-  }, [startWithCurtain])
+  }, [startWithEnvelope])
 
-  // The entry curtain owns the first seconds: it blocks the hero, then parts
-  // while the default song starts. Stored unlocks skip it entirely.
-  const [entry, setEntry] = useState(startWithCurtain)
+  // The velvet envelope owns the first seconds: the flap opens, the front page
+  // is drawn out and set on top, the envelope dissolves and the default song
+  // starts. Stored unlocks skip it entirely.
+  const [envelope, setEnvelope] = useState(startWithEnvelope)
 
   const [songIdx, setSongIdx] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -159,7 +161,7 @@ function InvitationPage({ startWithCurtain }) {
         onToggle={toggle}
         onSelectSong={selectSong}
       />
-      <BottomNav visible granted />
+      <BottomNav visible />
 
       <audio
         ref={audioRef}
@@ -169,15 +171,16 @@ function InvitationPage({ startWithCurtain }) {
         onEnded={playNext}
       />
 
-      {entry && <EntryCurtain onBeginOpening={play} onOpened={() => setEntry(false)} />}
+      {envelope && <EnvelopeReveal onBeginOpening={play} onOpened={() => setEnvelope(false)} />}
 
       {/* ————— 1 · Opening invitation ————— */}
       <section id="top" className="hero">
         <ParticleField density={70} />
         <div className="hero-vignette" aria-hidden="true" />
+        {/* The same content is drawn out of the velvet envelope on a fresh
+            unlock (see EnvelopeReveal.jsx) — keep the two in step. */}
         <div className="hero-card">
           <p className="hero-kicker">TO A LOVE THAT WILL LAST A LIFETIME</p>
-          <Ornament />
           <p className="script hero-script">we invite you to celebrate with us</p>
           <h1 className="hero-names">
             <ShinyText>Harthwel</ShinyText>
@@ -188,7 +191,7 @@ function InvitationPage({ startWithCurtain }) {
           <p className="hero-date"><CalendarIcon size={16} /> November 30, 2026</p>
           <p className="hero-copy">Two hearts, one promise, and a lifetime to share. We would love for you to be part of this special moment as we say 'I do'</p>
           <a className="hero-scroll" href="#portrait" onClick={(e) => { e.preventDefault(); document.getElementById('portrait')?.scrollIntoView({ behavior: 'smooth' }) }}>
-            <span>Scroll to celebrate</span>
+            <span>Scroll down</span>
             <ChevronDownIcon size={18} />
           </a>
         </div>
@@ -241,7 +244,12 @@ function CountdownSection() {
   const dayDiff = cd.d
   return (
     <section id="countdown" className="sec count-sec">
-      <SectionHeading icon={ClockIcon} kicker={cd.past ? 'The day is here!' : `Only ${dayDiff} days to go`} title="Counting the Moments" sub="November 30, 2026 · 6:30 AM · Asia/Manila" />
+      <SectionHeading
+        icon={ClockIcon}
+        kicker={cd.past ? 'The day is here!' : `Only ${dayDiff} days to go`}
+        title="Counting the Moments"
+        sub={<>November 30, 2026 · 6:30 AM<span className="count-tz-dot"> · </span><span className="count-tz">Asia/Manila</span></>}
+      />
       <div className="count-panel" data-reveal>
         {cd.past ? (
           <div className="count-past"><HeartIcon size={28} /><h3>Just married — thank you for celebrating with us.</h3></div>
@@ -258,7 +266,7 @@ function CountdownSection() {
         <div className="calendar-card">
           <div className="calendar-head"><CalendarIcon size={17} /><h3>November 2026</h3></div>
           <Calendar />
-          <p className="calendar-note"><SparkleIcon size={13} /> November 30 — the golden day</p>
+          <p className="calendar-note"><SparkleIcon size={13} /> Save the date</p>
         </div>
       </div>
     </section>
@@ -271,56 +279,59 @@ function EntourageSection() {
   return (
     <section id="entourage" className="sec ent-sec">
       <SectionHeading icon={UsersIcon} kicker="To assist us in our needs" title="The Entourage" sub="With gratitude to the people standing beside us" />
-      <div className="ent-roles" data-reveal>
-        {PRINCIPAL_ROLES.map((p, i) => (
-          <div className="ent-role" key={p.role} {...dly(i, 90)}>
-            <small>{p.role}</small>
-            <b>{p.name}</b>
-          </div>
-        ))}
-      </div>
-      <div className="ent-block" data-reveal>
-        <h3 className="ent-block-title"><SparkleIcon size={16} /> PRINCIPAL SPONSORS</h3>
-        <div className="pair-grid">
-          {PRINCIPAL_SPONSORS.map((sponsor, i) => {
-            const [first, second] = sponsor.split(' & ')
-            return (
-              <div className="pair-card" key={sponsor} {...dly(i, 40)}>
-                <em>#{String(i + 1).padStart(2, '0')}</em>
-                <span>{first}</span>
-                <i className="pair-heart"><HeartIcon size={13} /></i>
-                <span>{second}</span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-      <div className="ent-block" data-reveal>
-        <h3 className="ent-block-title"><SparkleIcon size={16} /> SECONDARY SPONSORS</h3>
-        <div className="sponsor-grid">
-          {SECONDARY_PAIRED.map(([groomsman, bridesmaid], i) => (
-            <div className="sponsor" key={groomsman} {...dly(i, 45)}>
-              <em>{String(i + 1).padStart(2, '0')}</em>
-              <span>{groomsman} &amp; {bridesmaid}</span>
+      {/* One antique gold frame holds the whole entourage; the names inside
+          carry no borders of their own. */}
+      <GoldFrame className="ent-frame">
+        <span className="ent-shine" aria-hidden="true" />
+        <div className="ent-roles" data-reveal>
+          {PRINCIPAL_ROLES.map((p, i) => (
+            <div className="ent-role" key={p.role} {...dly(i, 90)}>
+              <small>{p.role}</small>
+              <b>{p.name}</b>
             </div>
           ))}
         </div>
-      </div>
-      <div className="ent-block" data-reveal>
-        <h3 className="ent-block-title"><SparkleIcon size={16} /> THE LITTLE ONES & BEARERS</h3>
-        <div className="duo-grid">
-          <div className="duo-card" {...dly(0)}><small>LITTLE BRIDE</small><b>{OTHER_MEMBERS.littleBride}</b></div>
-          <div className="duo-card" {...dly(1)}><small>LITTLE GROOM</small><b>{OTHER_MEMBERS.littleGroom}</b></div>
+        <div className="ent-block" data-reveal>
+          <h3 className="ent-block-title"><SparkleIcon size={16} /> PRINCIPAL SPONSORS</h3>
+          <div className="pair-grid">
+            {PRINCIPAL_SPONSORS.map((sponsor, i) => {
+              const [first, second] = sponsor.split(' & ')
+              return (
+                <div className="pair-card" key={sponsor} {...dly(i, 40)}>
+                  <span>{first}</span>
+                  <i className="pair-heart"><HeartIcon size={13} /></i>
+                  <span>{second}</span>
+                </div>
+              )
+            })}
+          </div>
         </div>
-        <div className="chip-row">
-          <span className="chip-label">FLOWER GIRLS</span>
-          {OTHER_MEMBERS.flowerGirls.map((f, i) => <span className="chip" key={f} {...dly(i, 60)}>{f}</span>)}
+        <div className="ent-block" data-reveal>
+          <h3 className="ent-block-title"><SparkleIcon size={16} /> SECONDARY SPONSORS</h3>
+          <div className="sponsor-grid">
+            {SECONDARY_PAIRED.map(([groomsman, bridesmaid], i) => (
+              <div className="sponsor" key={groomsman} {...dly(i, 45)}>
+                <span>{groomsman} &amp; {bridesmaid}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="duo-grid">
-          <div className="duo-card" {...dly(0)}><small>BIBLE BEARER</small><b>{OTHER_MEMBERS.bibleBearer}</b></div>
-          <div className="duo-card" {...dly(1)}><small>COVENANT BEARER</small><b>{OTHER_MEMBERS.covenantBearer}</b></div>
+        <div className="ent-block" data-reveal>
+          <h3 className="ent-block-title"><SparkleIcon size={16} /> THE LITTLE ONES & BEARERS</h3>
+          <div className="duo-grid">
+            <div className="duo-card" {...dly(0)}><small>LITTLE BRIDE</small><b>{OTHER_MEMBERS.littleBride}</b></div>
+            <div className="duo-card" {...dly(1)}><small>LITTLE GROOM</small><b>{OTHER_MEMBERS.littleGroom}</b></div>
+          </div>
+          <div className="chip-row">
+            <span className="chip-label">FLOWER GIRLS</span>
+            {OTHER_MEMBERS.flowerGirls.map((f, i) => <span className="chip" key={f} {...dly(i, 60)}>{f}</span>)}
+          </div>
+          <div className="duo-grid">
+            <div className="duo-card" {...dly(0)}><small>BIBLE BEARER</small><b>{OTHER_MEMBERS.bibleBearer}</b></div>
+            <div className="duo-card" {...dly(1)}><small>COVENANT BEARER</small><b>{OTHER_MEMBERS.covenantBearer}</b></div>
+          </div>
         </div>
-      </div>
+      </GoldFrame>
     </section>
   )
 }
@@ -354,6 +365,10 @@ function StorySection({ program }) {
 /* ------------------------------ Wedding Details ----------------------------- */
 
 function DetailsSection({ program }) {
+  const giftQr = program?.photos?.giftQr || []
+  const [qrPreview, setQrPreview] = useState(null)
+  const previewQr = qrPreview === null ? null : giftQr[qrPreview]
+
   return (
     <section id="details" className="sec details-sec">
       <SectionHeading icon={FlowerIcon} kicker="Everything you need to know" title="The Wedding Details" />
@@ -376,8 +391,17 @@ function DetailsSection({ program }) {
           </p>
 
           {program?.photos?.attireGuide && (
-            <Tilt max={5} className="detail-img-tilt">
-              <img src={program.photos.attireGuide} alt="Attire guide" loading="lazy" className="detail-img" />
+            /* The couple's own guide sheet: every look has to stay visible, so
+               it is rendered whole (contain), never cropped. */
+            <Tilt max={4} className="attire-tilt">
+              <img
+                src={program.photos.attireGuide}
+                alt="Attire guide — suggested looks for the wedding"
+                width="2048"
+                height="2048"
+                loading="lazy"
+                className="attire-img"
+              />
             </Tilt>
           )}
         </article>
@@ -396,6 +420,27 @@ function DetailsSection({ program }) {
           <h3><GiftIcon size={20} /> GIFT GUIDE</h3>
           <Divider />
           <p>With all that we have, we've been blessed. Your presence is our greatest gift. Should you wish to contribute further, a gift of cash towards our future together would be deeply appreciated.</p>
+          {/* Gift QR codes (docs/07). Each one is a button: tapping it opens the
+              code full size so it can be scanned without pinching. */}
+          {giftQr.length > 0 && (
+            <div className="qr-row">
+              {giftQr.map((qr, i) => (
+                <button
+                  type="button"
+                  className="qr-tap"
+                  key={qr.src}
+                  onClick={() => setQrPreview(i)}
+                  aria-label={`Show the ${qr.label} gift QR code full size`}
+                >
+                  <GoldFrame className="qr-frame">
+                    <img className="qr-img" src={qr.src} alt={`${qr.label} QR code for sending a gift`} width="1840" height="1840" loading="lazy" />
+                    <span className="qr-label">{qr.label}</span>
+                    <span className="qr-shine" aria-hidden="true" />
+                  </GoldFrame>
+                </button>
+              ))}
+            </div>
+          )}
         </article>
 
         <article className="detail-block reminder">
@@ -410,6 +455,14 @@ function DetailsSection({ program }) {
           </ul>
         </article>
       </div>
+
+      {previewQr && (
+        <QrLightbox
+          src={previewQr.src}
+          label={`${previewQr.label} gift QR code`}
+          onClose={() => setQrPreview(null)}
+        />
+      )}
     </section>
   )
 }
@@ -425,8 +478,9 @@ function GallerySection({ program }) {
 
   return (
     <section id="gallery" className="sec gallery-sec">
-      <SectionHeading icon={CameraOffIcon} kicker="A glimpse of us" title="Forever Starts Now" sub={program.hashtag} />
-      <div className="slideshow" data-reveal>        {program.photos.slideshow.map((src, i) => (
+      <SectionHeading kicker="A glimpse of us" title="Forever Starts Now" />
+      <div className="slideshow" data-reveal>
+        {program.photos.slideshow.map((src, i) => (
           <figure key={i} className={`slide ${i === slide ? 'on' : ''}`}>
             <img src={src} alt="" loading="lazy" />
           </figure>

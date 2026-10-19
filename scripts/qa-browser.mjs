@@ -69,23 +69,40 @@ async function seeSection(page, label, selector) {
 
 /** Type the access code and wait for the invitation to mount. */
 async function unlock(page, tag, code = CODE) {
-  // The gate is taller than a phone screen: scroll it first, so the run proves
-  // the invitation still opens on the hero.
   await page.fill('.gate-input', code)
+  // The gate is now a single open column and can fit a phone screen, so the run
+  // forces overflow: the invitation must still open on the hero for a guest who
+  // had scrolled the gate before unlocking.
+  await page.evaluate(() => { document.documentElement.style.minHeight = '180%' })
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
-  await page.waitForTimeout(300)
+  await page.waitForTimeout(400)
   const gateScroll = await page.evaluate(() => Math.round(window.scrollY))
+  await page.evaluate(() => { document.documentElement.style.minHeight = '' })
   await page.click('.gate-code-btn')
   await page.waitForTimeout(700)
   check(`${tag}: gate was scrolled before unlocking`, gateScroll > 20, `scrollY=${gateScroll}`)
-  check(`${tag}: entrance curtain blocks the hero`, await page.locator('.entry-curtain').isVisible().catch(() => false))
-  check(`${tag}: hero stays covered until the opening`, (await page.locator('.entry-curtain:not(.leaving)').count()) > 0)
-  await page.click('.entry-skip')
+  check(`${tag}: the envelope blocks the hero`, await page.locator('.envelope').isVisible().catch(() => false))
+  check(`${tag}: the flap is closed over the hero`, (await page.locator('.envelope-flap').count()) > 0)
+  check(`${tag}: the hero is not shown yet`, (await page.locator('.envelope-letter').count()) > 0)
+  check(`${tag}: the page is held still while opening`, await page.evaluate(() => document.body.classList.contains('no-scroll')))
+  const flapA = await page.locator('.envelope-flap').evaluate((n) => getComputedStyle(n).transform).catch(() => 'none')
+  await page.waitForTimeout(800)
+  const flapB = await page.locator('.envelope-flap').evaluate((n) => getComputedStyle(n).transform).catch(() => 'none')
+  check(`${tag}: the flap swings open in 3D`, flapA !== flapB && /matrix3d/.test(flapB), `${flapA.slice(0, 24)} -> ${flapB.slice(0, 24)}`)
+  await page.click('.envelope-skip')
   await page.waitForTimeout(1300)
   const opened = await page.evaluate(() => Math.round(window.scrollY))
   check(`${tag}: invitation opens at the top`, opened === 0, `scrollY=${opened}`)
   check(`${tag}: invitation opens with the configured code`, await page.locator('#top .hero-card').isVisible().catch(() => false))
-  check(`${tag}: entry curtain is gone after unveiling`, (await page.locator('.entry-curtain').count()) === 0)
+  check(`${tag}: the envelope is gone after unveiling`, (await page.locator('.envelope-layer').count()) === 0)
+  check(`${tag}: the page can move again`, !(await page.evaluate(() => document.body.classList.contains('no-scroll'))))
+  // The song must really play, not just arm: it starts inside the code-click
+  // gesture, which is what browser autoplay rules require.
+  const audio = await page.evaluate(() => {
+    const a = document.querySelector('audio')
+    return a ? { paused: a.paused, src: a.currentSrc.split('/').pop() } : null
+  })
+  check(`${tag}: the default song starts with the opening`, !!audio && audio.paused === false, JSON.stringify(audio))
   const audioSrc = await page.locator('audio').evaluate((a) => a.currentSrc || a.src).catch(() => '')
   check(`${tag}: player serves the local track`, (audioSrc || '').includes('/music/'), audioSrc)
   // Headless autoplay may still be settling: accept playing now or the tap
@@ -114,7 +131,12 @@ try {
     const formHref = await page.locator('.gate-form-btn').getAttribute('href').catch(() => '')
     check(`${tag}: gate links to the Google Form`, formHref === FORM_LINK, formHref)
     check(`${tag}: gate form button opens a new tab`, await page.locator('.gate-form-btn').getAttribute('target') === '_blank')
-    check(`${tag}: gate shows the RSVP deadline`, /NOVEMBER 15, 2026/.test(await page.locator('.gate-deadline').innerText().catch(() => '')))
+    check(`${tag}: gate shows the RSVP deadline`, /Please Respond before November 15, 2026/.test(await page.locator('.gate-deadline').innerText().catch(() => '')))
+    check(`${tag}: gate shows the attendance line`, /Please confirm your attendance on our Wedding Day/.test(await page.locator('.gate-step-title').first().innerText().catch(() => '')))
+    check(`${tag}: gate shows no crest ring`, (await page.locator('.gate-crest').count()) === 0)
+    check(`${tag}: gate shows no kicker`, (await page.locator('.gate-kicker').count()) === 0)
+    check(`${tag}: gate shows no step badges`, (await page.locator('.gate-step-badge').count()) === 0)
+    check(`${tag}: gate shows no labelled code field`, (await page.locator('.gate-step .field-label').count()) === 0)
     await noOverflow(page, `${tag}: gate`)
 
     await page.fill('.gate-input', `${CODE}X`)
@@ -127,7 +149,7 @@ try {
     check(`${tag}: chrome appears once unlocked`, await page.locator('.bottom-nav.show').isVisible())
 
     /* ------------------------- invitation hero → footer ------------------------ */
-    check(`${tag}: no envelope intro overlay`, (await page.locator('.intro').count()) === 0)
+    check(`${tag}: the envelope is gone once inside`, (await page.locator('.envelope-layer').count()) === 0)
     await seeSection(page, `${tag}: hero invitation card`, '#top .hero-card')
     await seeSection(page, `${tag}: portrait`, '#portrait .portrait-img')
     check(`${tag}: invitation has no RSVP section`, (await page.locator('#rsvp').count()) === 0)
@@ -139,9 +161,65 @@ try {
     await seeSection(page, `${tag}: venue maps`, '#venue .map-frame')
     await seeSection(page, `${tag}: programme outline`, '.stage-list')
     await seeSection(page, `${tag}: story card`, '#story .story-card')
+    await seeSection(page, `${tag}: entourage frame`, '#entourage .ent-frame')
+    check(`${tag}: entourage names carry no boxes`, (await page.evaluate(() => {
+      const names = [...document.querySelectorAll('#entourage .pair-card span, #entourage .chip, #entourage .duo-card b, #entourage .sponsor span')]
+      return names.filter((n) => {
+        const s = getComputedStyle(n)
+        return (parseFloat(s.borderTopWidth) + parseFloat(s.borderLeftWidth)) > 0 || (s.backgroundColor !== 'rgba(0, 0, 0, 0)' && s.backgroundColor !== 'transparent')
+      }).length
+    })) === 0)
     check(`${tag}: entourage roles rendered`, (await page.locator('#entourage .ent-role').count()) >= 4)
     check(`${tag}: sponsor pairs rendered`, (await page.locator('#entourage .pair-card').count()) >= 10)
+    check(`${tag}: no pair numbers are printed`, (await page.locator('#entourage .pair-card em, #entourage .sponsor em').count()) === 0)
+    check(`${tag}: secondary sponsors are centred on mobile`, await page.evaluate(() => {
+      const row = document.querySelector('#entourage .sponsor')
+      if (!row) return false
+      const r = row.getBoundingClientRect()
+      const t = row.querySelector('span')?.getBoundingClientRect()
+      if (!t) return false
+      return Math.abs((r.left + r.width / 2) - (t.left + t.width / 2)) < 2 && getComputedStyle(row).justifyContent === 'center'
+    }))
     await seeSection(page, `${tag}: wedding details`, '#details .floral-frame')
+    check(`${tag}: the attire guide is shown whole (contain)`, await page.evaluate(() => {
+      const img = document.querySelector('.attire-img')
+      if (!img || !img.complete || !img.naturalWidth) return false
+      const s = getComputedStyle(img)
+      const r = img.getBoundingClientRect()
+      // Square source, square box, contain: nothing is cropped away.
+      return s.objectFit === 'contain'
+        && Math.abs(img.naturalWidth / img.naturalHeight - 1) < 0.01
+        && Math.abs(r.width - r.height) < 2
+        && r.width > 200
+    }))
+    const qrCount = await page.locator('#details .qr-row .qr-img').count()
+    check(`${tag}: the three gift QR codes render`, qrCount === 3, `count=${qrCount}`)
+    check(`${tag}: gift QR codes are labelled`, /GCash.*China Bank.*Mari Bank/.test((await page.locator('#details .qr-label').allTextContents()).join('|')))
+    check(`${tag}: gift QR codes are loaded, square and uncropped`, await page.evaluate(() => {
+      const imgs = [...document.querySelectorAll('#details .qr-img')]
+      return imgs.length === 3 && imgs.every((i) => {
+        const r = i.getBoundingClientRect()
+        return i.complete && i.naturalWidth > 0 && getComputedStyle(i).objectFit === 'contain' && Math.abs(r.width - r.height) < 2 && r.width >= 150
+      })
+    }))
+    await page.locator('.qr-tap').first().click()
+    await page.waitForTimeout(450)
+    check(`${tag}: tapping a code opens the full preview`, await page.locator('.qr-modal img').isVisible().catch(() => false))
+    const preview = await page.locator('.qr-modal img').evaluate((n) => {
+      const r = n.getBoundingClientRect()
+      return { w: Math.round(r.width), h: Math.round(r.height), fit: getComputedStyle(n).objectFit, ar: n.naturalWidth / n.naturalHeight }
+    }).catch(() => null)
+    check(`${tag}: the preview is large and whole`, !!preview
+      && preview.w >= 260
+      && preview.fit === 'contain'
+      // The box keeps the photo's own proportions: the whole code, uncropped.
+      && Math.abs(preview.w / preview.h - preview.ar) < 0.02 * preview.ar,
+    JSON.stringify(preview))
+    check(`${tag}: the preview holds the page still`, await page.evaluate(() => document.body.classList.contains('no-scroll')))
+    await page.keyboard.press('Escape')
+    await page.waitForTimeout(400)
+    check(`${tag}: Escape closes the preview`, (await page.locator('.qr-modal').count()) === 0)
+    check(`${tag}: the page scrolls again after the preview`, !(await page.evaluate(() => document.body.classList.contains('no-scroll'))))
     await seeSection(page, `${tag}: slideshow`, '#gallery .slideshow')
     await seeSection(page, `${tag}: footer`, '.footer')
     await noOverflow(page, `${tag}: full page`)
@@ -207,7 +285,7 @@ try {
     await page.reload({ waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(1200)
     check(`${tag}: a refresh keeps the guest inside`, await page.locator('#top .hero-card').isVisible().catch(() => false))
-    check(`${tag}: no entry curtain on refresh`, (await page.locator('.entry-curtain').count()) === 0)
+    check(`${tag}: no envelope on refresh`, (await page.locator('.envelope-layer').count()) === 0)
 
     await page.evaluate(() => localStorage.setItem('hk_access', 'ROTATED-CODE'))
     await page.reload({ waitUntil: 'domcontentloaded' })

@@ -22,10 +22,14 @@ responses.
    “Your access code is … — enter it on the invitation to open the full
    details”).
 2. `src/components/AccessGate.jsx` is the first view: the button that opens the
-   Form comes first, then the code field. The code is compared in the browser
+   Form comes first, then the code field. The gate is one open column — no crest
+   ring, no kicker, no numbered steps, no frames, and no visible “ACCESS CODE”
+   label (the field keeps `ACCESS.codeLabel` for screen readers only). The date
+   and the RSVP deadline are bold. The code is compared in the browser
    against `ACCESS.code` — which reads `VITE_ACCESS_CODE` (`.env` locally, Vercel
    for production, see `.env.example`) and falls back to the placeholder in
-   `src/config/site.js`. The invitation mounts only when it matches.
+   `src/config/site.js`. The invitation mounts only when it matches, and a fresh
+   unlock plays the envelope opening once (`06`).
 3. The gate is a **courtesy screen**. `ACCESS.code` ships in the JS bundle, so
    any guest can read or share it — it keeps polite guests out, not determined
    ones. Never describe it as private, secure, or protected, and never claim the

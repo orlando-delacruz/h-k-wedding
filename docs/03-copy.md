@@ -20,9 +20,13 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
 
 ## RSVP
 
-- Heading: “RSVP”
-- Deadline: “PLEASE RESPOND BY NOVEMBER 15, 2026”
-- The embedded Google Form owns all field labels, attendance choices, and its
+- The gate is one open column: no crest ring, no kicker, no numbering, no frames,
+  no “ACCESS CODE” label. The code field keeps its label for screen readers only.
+- Attendance step: “Please confirm your attendance on our Wedding Day”
+- Code step: “Enter the code you receive”
+- Deadline: “Please Respond before November 15, 2026” (bold, set as the owner
+  rewrote it — supersedes the earlier all-caps line)
+- The Google Form owns all field labels, attendance choices, and its
   confirmation. Intended fields: guest's full name, attendance confirmation,
   first/second companion full names, message for the couple.
 
@@ -44,6 +48,7 @@ Two hearts, one promise, and a lifetime to share. We would love for you to be pa
 
 - Days, Hours, Minutes, Seconds
 - November 2026, November 30 gold-circled
+- Calendar note: “Save the date” (replaces “November 30 — The Golden Day”)
 
 ## Wedding details
 

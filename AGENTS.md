@@ -47,8 +47,11 @@ any older doc where they disagree.
   dimensional — never flat yellow. The slow light-sweep on gold borders, frames,
   and dividers is mandatory and must survive every restyle.
 - Animation: anime.js for choreography, CSS for ambient motion. Respect
-  `prefers-reduced-motion`. Do not add animation that gates content. No envelope,
-  no wax seal — the hero invitation card is the opening screen.
+  `prefers-reduced-motion`. Do not add animation that gates content. The opening
+  after the access code is a 3D velvet envelope (`src/components/EnvelopeReveal.jsx`):
+  the front page is pulled out of the pocket and placed on the live hero card, and
+  the envelope dissolves behind it. Keep the hero card and its envelope clone in
+  step when either copy changes. No wax seal.
 
 ## 3. Security/privacy rules (do not weaken)
 

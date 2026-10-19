@@ -45,18 +45,28 @@ export function GoldFrame({ children, className = '', corners = true, label }) {
 }
 
 export function Ornament() {
-  // useId keeps the gradient id unique: the hero, the footer and the entry
-  // curtain all render this ornament on the same page.
+  // useId keeps the gradient id unique: the hero and the footer both render this
+  // ornament on the same page.
   const gid = `gold-${useId().replace(/:/g, '')}`
+  // One heart glyph, reused at three sizes — the small pair flanks a full-size
+  // heart at the centre.
+  const heart = (x, y, s) => (
+    <path
+      d="M0 3.1C0 1.5 1.3.2 2.9.2c1 0 1.8.5 2.3 1.3C5.7.7 6.5.2 7.5.2 9.1.2 10.4 1.5 10.4 3.1c0 2.6-3.6 5-5.2 6.9C3.6 8.1 0 5.7 0 3.1Z"
+      transform={`translate(${x} ${y}) scale(${s})`}
+      stroke={`url(#${gid})`}
+      strokeWidth={1.4}
+      strokeLinejoin="round"
+    />
+  )
   return (
     <div className="ornament" aria-hidden="true">
       <svg viewBox="0 0 240 34" width="220" height="31" fill="none">
-        <path d="M6 17h58" stroke={`url(#${gid})`} strokeWidth="1.2" />
-        <path d="M176 17h58" stroke={`url(#${gid})`} strokeWidth="1.2" />
-        <path d="M120 5.5c4 5 9 6.5 15 19.5-6-13-11.5-14-15-14s-9 1-15 14c6-13 11-14.5 15-19.5Z" stroke={`url(#${gid})`} strokeWidth="1.2" />
-        <circle cx="120" cy="17" r="2.4" fill={`url(#${gid})`} />
-        <circle cx="104" cy="17" r="1.5" fill={`url(#${gid})`} />
-        <circle cx="136" cy="17" r="1.5" fill={`url(#${gid})`} />
+        <path d="M6 17h70" stroke={`url(#${gid})`} strokeWidth="1.2" />
+        <path d="M164 17h70" stroke={`url(#${gid})`} strokeWidth="1.2" />
+        {heart(96.9, 13.5, 0.6)}
+        {heart(114.8, 11.5, 1)}
+        {heart(136.9, 13.5, 0.6)}
         <defs>
           <linearGradient id={gid} x1="0" y1="0" x2="240" y2="34" gradientUnits="userSpaceOnUse">
             <stop stopColor="#BF953F" /><stop offset=".35" stopColor="#FCF6BA" /><stop offset=".6" stopColor="#AA771C" /><stop offset="1" stopColor="#BF953F" />
@@ -64,15 +74,5 @@ export function Ornament() {
         </defs>
       </svg>
     </div>
-  )
-}
-
-export function Field({ label, children, hint }) {
-  return (
-    <label className="field">
-      {label && <span className="field-label">{label}</span>}
-      {children}
-      {hint && <span className="field-hint">{hint}</span>}
-    </label>
   )
 }

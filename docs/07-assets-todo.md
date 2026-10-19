@@ -34,11 +34,40 @@ All placeholders allowed until real assets arrive. Keep paths stable so swap is 
 
 ## 5. Couple photos + story
 
-- [ ] Hero portrait, curtain portrait, story strip (3–6), slideshow (3–6)
-- [ ] Real story text for `src/config/program.js`
-- [ ] Attire-guide image, timeline image
+- [x] Couple portrait beside the hero (`PHOTOS.heroPortrait`) —
+      `public/images/main.jpg`
+- [x] Photoshoot (7 files) feeding both the story film strip and the closing
+      slideshow (`program.photos.strip` / `.slideshow`) —
+      `public/images/photoshoot/*.jpg`
+- [ ] Real story text for `src/config/program.js` (the current text is a draft)
+- [x] Attire-guide image (`program.photos.attireGuide`) — the couple's own sheet
+      at `public/images/attire/attire.jpg`, shown whole (`contain`). Replace the
+      file (or point the path elsewhere) if it changes.
+- [ ] Timeline image (`program.photos.timeline`, `null` — the block stays hidden
+      until a URL exists)
+- [ ] Programme photo (`program.photos.programme`, `''` — the gold frame that
+      closes the Programme section appears only once a URL exists; no stock
+      substitute is shown)
+- [x] Three gift QR-code images — `public/images/gift-qr/gcash.jpg`,
+      `chinabank.jpg`, `maribank.jpg`, listed with their labels in
+      `program.photos.giftQr`. Add or remove an entry there; the row, the labels
+      and the full-size preview all follow the list. Codes must be the couple's
+      real accounts — never generate one by hand.
 - No temporary labels appear in the UI (owner decision): the page presents the
-  current photos plainly, so the real shots must land before sharing.
+  current photos plainly.
+
+### Originals vs web copies (important)
+
+- **Web copies** live in `public/images/` and are what the site ships:
+  `main.jpg` at 1200px, each photoshoot frame at 1400px, JPEG q82 — ~2.9 MB in
+  total. Originals were 8K files, 128 MB, which no phone should download.
+- **Originals** are in `assets-originals/` (git-ignored, never deployed). Keep
+  them there; if the site ever needs a new crop or size, resize from the
+  originals rather than re-exporting from `public/`.
+- To replace a photo, drop the web-sized file in `public/images/` (or point the
+  config at a different path). Keep the frame ratio in mind: the slideshow and
+  the film strip are both 4:5 portrait frames, so portrait photos sit in them
+  best; landscape frames are centre-cropped.
 
 ## Drop-in checklist
 

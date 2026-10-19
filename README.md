@@ -9,9 +9,10 @@ No backend, no database, no admin — the Form owns every response.
 
 An access gate sits in front of the invitation. Guests answer the Form, its
 confirmation shares the code, and the code opens the page — a courtesy screen,
-not access control (`docs/05`). A successful code unveils the velvet entry
-curtain while the music starts, and is remembered on the device while it still
-matches the configured code.
+not access control (`docs/05`). A successful code opens a velvet midnight-blue
+envelope with an antique gold flap, draws the front page out of it and sets it
+down on the hero as the envelope dissolves and the music starts. The unlock is
+remembered on the device while it still matches the configured code.
 
 ## Identity
 
@@ -26,7 +27,7 @@ matches the configured code.
 - **Frontend only:** React 18 + Vite static build (`dist/`). No server, no API routes.
 - **Fonts:** Pinyon Script + Cormorant Garamond via Google Fonts. Body uses
   Cormorant Garamond until licensed Calluna files arrive (`docs/07`).
-- **Animation:** anime.js choreography (the entry curtain), CSS ambient motion and
+- **Animation:** anime.js choreography (the envelope opening), CSS ambient motion and
   the gold light-sweep. Respects `prefers-reduced-motion`.
 - **Music:** the couple's two tracks in `public/music/`, played by the floating
   player — disc for play/pause, nameplate for the song list, and the next track
@@ -69,7 +70,7 @@ All three exit non-zero on failure.
 - `docs/03-copy.md` — locked invitation copy
 - `docs/04-entourage.md` — locked entourage list
 - `docs/05-rsvp-google-form.md` — RSVP via Google Form + the access gate
-- `docs/06-music-animation.md` — songs, the player, the entry curtain
+- `docs/06-music-animation.md` — songs, the player, the envelope opening
 - `docs/07-assets-todo.md` — assets the couple still needs to supply
 - `docs/08-deployment.md` — static hosting notes
 - `docs/09-local-testing.md` — manual walkthrough
@@ -84,7 +85,7 @@ src/
   config/entourage.js        locked entourage data
   components/                Icons, Floral, effects (particles, tilt, reveal),
                              ui (headings, frames, ornament), chrome (nav,
-                             player), AccessGate, EntryCurtain, ProgramStage,
+                             player), AccessGate, EnvelopeReveal, ProgramStage,
                              ErrorBoundary
   styles.css                 design tokens + every component style
 scripts/

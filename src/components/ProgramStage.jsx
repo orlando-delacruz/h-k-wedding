@@ -1,5 +1,6 @@
 import React from 'react'
 import { SectionHeading, GoldFrame } from './ui.jsx'
+import { Tilt } from './effects.jsx'
 import { MapPinIcon, SparkleIcon } from './Icons.jsx'
 
 /**
@@ -10,6 +11,7 @@ import { MapPinIcon, SparkleIcon } from './Icons.jsx'
 export default function ProgramStage({ program }) {
   const venues = Array.isArray(program?.venues) ? program.venues : []
   const stages = Array.isArray(program?.stages) ? program.stages : []
+  const programmeShot = program?.photos?.programme || null
 
   return (
     <>
@@ -50,6 +52,18 @@ export default function ProgramStage({ program }) {
               </li>
             ))}
           </ol>
+          {/* The couple's programme photo (docs/07). Hidden while no URL is set,
+              so the section never shows an empty frame. */}
+          {programmeShot && (
+            <div className="programme-shot" data-reveal>
+              <Tilt max={5} className="programme-tilt">
+                <GoldFrame className="programme-frame">
+                  <img className="programme-img" src={programmeShot} alt="The wedding programme" loading="lazy" />
+                  <span className="map-shine" aria-hidden="true" />
+                </GoldFrame>
+              </Tilt>
+            </div>
+          )}
         </section>
       )}
     </>

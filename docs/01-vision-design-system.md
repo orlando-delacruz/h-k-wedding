@@ -43,7 +43,7 @@ Flat yellow borders are explicitly avoided.
 | Glitter | hero + background | `ParticleField` canvas |
 | Illumination | player disc, CTA pulse | CSS keyframes |
 | Fade / reveal | all sections | `[data-reveal]` + `useReveal` |
-| Curtain (entry) | post-code reveal | midnight velvet + gold, 3D: ~1.4 s hold, ~3 s rotateY gather with parallax layers, music starts with it, tap to skip |
+| Envelope (opening) | post-code reveal | velvet midnight + antique gold envelope in real 3D: ~0.9 s hold, flap swings back on its fold line, the front page is drawn out of the pocket and set on the live hero card, envelope dissolves, music starts with it, tap to skip |
 | Film strip | Our Story | CSS marquee, pauses on hover |
 | Shine | names, hashtag, borders | CSS gradient animation |
 
@@ -52,8 +52,8 @@ Flat yellow borders are explicitly avoided.
 ## Accessibility and responsive rules
 
 - `:focus-visible` rings on interactive elements; full keyboard operability.
-- `prefers-reduced-motion: reduce` disables particles, marquee, curtain slide,
-  reveals; curtain content stays readable.
+- `prefers-reduced-motion: reduce` disables particles, marquee, envelope opening,
+  reveals; the invitation is simply shown.
 - Mobile-first 640 px column, breakpoints 419/560/700/768 px, `svh` sizing,
   `env(safe-area-inset-*)` chrome padding. No horizontal overflow.
 
@@ -64,10 +64,10 @@ src/components/
   Icons.jsx        hand-rolled stroke icons (no icon dependency)
   Floral.jsx       chrysanthemum, lilac, rose, delphinium corners
   effects.jsx      ParticleField, useReveal, Tilt, CountUp, burstAt, ShinyText
-  ui.jsx           SectionHeading, Divider, GoldFrame, Ornament, Field
+  ui.jsx           SectionHeading, Divider, GoldFrame, Ornament
   chrome.jsx       BottomNav (5 anchors), MusicBar (floating player + track list)
   AccessGate.jsx   first view: RSVP form hand-off + access-code field
-  EntryCurtain.jsx full-screen velvet reveal after the code, starts the music
+  EnvelopeReveal.jsx  3D velvet envelope + gold tip after the code, starts the music
   ProgramStage.jsx venues in gold map frames, programme outline
   ErrorBoundary.jsx section-level failure fallback
 ```

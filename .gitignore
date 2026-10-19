@@ -12,6 +12,9 @@ dist/
 # RSVP workbooks and private exports
 data/
 
+# Full-resolution photo originals (the web copies live in public/images/)
+assets-originals/
+
 # Editor and OS noise
 .DS_Store
 Thumbs.db

@@ -6,7 +6,8 @@ export const SITE = {
   dateLabel: 'November 30, 2026',
   timeLabel: '6:30 AM',
   hashtag: '#NaKHATitiyakNaKayHARTH',
-  rsvpDeadline: 'PLEASE RESPOND BY NOVEMBER 15, 2026',
+  // Rendered bold under the Form button on the gate (owner wording, docs/03).
+  rsvpDeadline: 'Please Respond before November 15, 2026',
 }
 
 // Venue names, addresses and map links live in `program.js` (the Venues section
@@ -20,12 +21,13 @@ export const SONGS = [
   { id: 'paninindigan', title: 'Paninindigan kita', file: 'paninindigan-kita.mp3' },
 ]
 
-const un = (id) => `https://images.unsplash.com/${id}?q=80&w=1200&auto=format&fit=crop`
-
-// Photographs that appear on the PUBLIC page. All are temporary stock imagery,
-// clearly labelled in the interface, and replaced when the couple supplies photos.
+// Photographs that appear on the PUBLIC page. `main.jpg` is the couple's own
+// portrait (beside the hero); the pre-wedding photoshoot fills the film strip and
+// the closing slideshow. All served from `public/images/` — swap a path only.
+// The full-resolution originals live in `assets-originals/` (git-ignored); the
+// files under `public/` are web-sized copies (1200–1400px, ~80% quality).
 export const PHOTOS = {
-  heroPortrait: un('photo-1519741497674-611481863552'),
+  heroPortrait: '/images/main.jpg',
 }
 
 // RSVP — the Google Form owns fields, validation, submission and every response
@@ -45,10 +47,14 @@ const FALLBACK_ACCESS_CODE = 'HARTHWEL2026'
 
 export const ACCESS = {
   code: (import.meta.env.VITE_ACCESS_CODE || '').trim() || FALLBACK_ACCESS_CODE,
-  kicker: 'Kindly respond first',
   sub: 'Our RSVP form shares the access code that opens the full invitation.',
   formButton: 'Open the RSVP form',
 
+  // Gate copy — the owner's final sentences (no kicker, no step numbers).
+  attendanceTitle: 'Please confirm your attendance on our Wedding Day',
+  codeTitle: 'Enter the code you receive',
+
+  // Kept as the input's accessible name only; the gate shows no label text.
   codeLabel: 'Access code',
   codeButton: 'Open our invitation',
   codeError: 'That code does not match. Please check it and try again.',
